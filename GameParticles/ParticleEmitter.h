@@ -42,13 +42,15 @@ private:
 	float	last_loop;	
 	int		last_active_particle;
 
-	// added for speed efficiency
-	Particle *headParticle;
-
 	const Vect4D	vel_variance;
 	const Vect4D	pos_variance;
 	const float	scale_variance;
-	std::list<Particle> particleList;
+
+	// List data
+	Particle* const pParticleBlockStart;
+	Particle* const pParticleBlockEnd;
+	Particle* headParticle;
+	Particle* tailParticle;
 };
 
 #endif 
