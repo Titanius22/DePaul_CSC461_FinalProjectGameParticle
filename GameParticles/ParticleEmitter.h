@@ -25,9 +25,6 @@ public:
 	void update();
 	void draw() const;
 
-	void addParticleToList(Particle *p );
-	void removeParticleFromList( Particle *p );
-
 	const static Matrix TRANS_CAMERA_MATRIX;
 	const static Matrix INVERSE_TRANS_CAMERA_MATRIX;
 	const static Matrix TRANS_INVERSE_TRANS_CAMERA_MATRIX;

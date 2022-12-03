@@ -93,12 +93,5 @@ void Vect4D::Cross(const Vect4D &vin, Vect4D &vout) const
 	vout.z = (x * vin.y) - (y * vin.x);
 }
 
-void Vect4D::set(const float tx, const float ty, const float tz, const float tw)
-{
-	this->x = tx;
-	this->y = ty;
-	this->z = tz;
-	this->w = tw;
-}
 
 // --- End of File ---

@@ -140,6 +140,16 @@ void ParticleEmitter::draw() const
 {
 	Matrix tmp;
 
+	// particle position
+	Matrix transParticle;
+
+	// rotation matrix
+	Matrix rotParticle;
+
+	// pivot Point
+	Vect4D pivotVect(-20.0f, 0.0f, 200.0f);
+	Matrix pivotParticle;
+
 	// iterate throught the list of particles
 	Particle* p = headParticle;
 	do
@@ -154,25 +164,17 @@ void ParticleEmitter::draw() const
 		}
 		
 		// particle position
-		Matrix transParticle;
 		transParticle.setTransMatrix(&(p->position));
 
 		// rotation matrix
-		Matrix rotParticle;
 		rotParticle.setRotZMatrix(p->rotation);
 
 		// pivot Point
-		Vect4D pivotVect(-20.0f, 0.0f, 200.0f);
 		pivotVect *= p->life;
-		Matrix pivotParticle;
 		pivotParticle.setTransMatrix( &pivotVect );
-
-		// scale Matrix
-		Matrix scaleMatrix;
-		scaleMatrix.setScaleMatrix( &(p->scale) );
 		
 		// total transformation of particle
-		tmp = scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * scaleMatrix;
+		tmp = p->scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * p->scaleMatrix;
 
 		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
@@ -182,52 +184,6 @@ void ParticleEmitter::draw() const
 
 		assert(p != nullptr);
 	}while (p != tailParticle);
-}
-
-void ParticleEmitter::addParticleToList(Particle* p)
-{
-	assert(p);
-	if (this->headParticle == nullptr)
-	{ // first on list
-		this->headParticle = p;
-		p->next = nullptr;
-		p->prev = nullptr;
-	}
-	else
-	{ // add to front of list
-		headParticle->prev = p;
-		p->next = headParticle;
-		p->prev = nullptr;
-		headParticle = p;
-	}
-}
-
-void ParticleEmitter::removeParticleFromList(Particle* p)
-{
-	// make sure we are not screwed with a null pointer
-	assert(p);
-
-	if (p->prev == nullptr && p->next == nullptr)
-	{ // only one on the list
-		this->headParticle = nullptr;
-	}
-	else if (p->prev == nullptr && p->next != nullptr)
-	{ // first on the list
-		p->next->prev = nullptr;
-		this->headParticle = p->next;
-	}
-	else if (p->prev != nullptr && p->next == nullptr)
-	{ // last on the list 
-		p->prev->next = nullptr;
-	}
-	else//( p->next != nullptr  && p->prev !=nullptr )
-	{ // middle of the list
-		p->prev->next = p->next;
-		p->next->prev = p->prev;
-	}
-
-	// bye bye
-	delete p;
 }
 
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(

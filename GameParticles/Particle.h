@@ -20,20 +20,19 @@ public:
 	Particle(const Particle& srcParticle);
 	Particle& operator=(const Particle&) = delete;
 
-	Particle(const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
 	Particle(const ParticleEmitter* const pParticleEmitter);
 
 	void Update(const float time_elapsed);
 
 private:
-	Particle *next;
-	Particle *prev;
+	Vect4D	position;
+	Vect4D	velocity;
+	Matrix	scaleMatrix;
 
 	float	life;
 	float	rotation;
-	Vect4D	position;
-	Vect4D	velocity;
-	Vect4D	scale;
+	uint32_t pad0;
+	uint32_t pad1;
 
 	const static Vect4D Z_AXIS;
 	const static float ROTATION_VELOCITY;

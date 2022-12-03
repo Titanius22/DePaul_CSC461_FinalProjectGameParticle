@@ -64,6 +64,7 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	this->m15 = 1.0f;
 }
 
+// only runs once, don't care to optimize
 Matrix Matrix::getTransMatrix(const Vect4D t)
 {
 	//	{	1		0		0		0	}
@@ -294,6 +295,7 @@ Matrix& Matrix::operator/=(const float rhs)
 	return *this;
 }
 
+// only runs twice, don't care to optimize
 float Matrix::Determinant() const
 {
 	float ta = (m10 * m15) - (m11 * m14);
@@ -315,6 +317,7 @@ float Matrix::Determinant() const
 	
 }
 
+// only runs twice, don't care to optimize
 Matrix Matrix::GetAdjugate() const
 {
 	Matrix tmp;
@@ -411,6 +414,7 @@ Matrix Matrix::GetAdjugate() const
 	return tmp;
 }
 
+// only runs twice, don't care to optimize
 Matrix Matrix::Inverse(const Matrix in)
 {
 	Matrix tmp;
@@ -427,35 +431,6 @@ Matrix Matrix::Inverse(const Matrix in)
 	}
 
 	return tmp;
-}
-
-void Matrix::setScaleMatrix(const Vect4D *scale)
-{
-	//	{	sx		0		0		0	}
-	//	{	0		sy		0		0	}
-	//	{	0		0		sz		0	}
-	//	{	0		0		0		1	}
-	
-	Matrix tmp;
-	this->m0 = scale->x;
-	this->m1 = 0;
-	this->m2 = 0;
-	this->m3 = 0;
-	
-	this->m4 = 0;
-	this->m5 = scale->y;
-	this->m6 = 0;
-	this->m7 = 0;
-	
-	this->m8 = 0;
-	this->m9 = 0;
-	this->m10 = scale->z;
-	this->m11 = 0;
-	
-	this->m12 = 0;
-	this->m13 = 0;
-	this->m14 = 0;
-	this->m15 = 1.0;
 }
 
 void Matrix::setRotZMatrix(const float az)
@@ -487,6 +462,34 @@ void Matrix::setRotZMatrix(const float az)
 	tmp.m15 = 1;
 	
 	*this = tmp;
+}
+
+void Matrix::setScaleMatrix(const Vect4D *scale)
+{
+	//	{	sx		0		0		0	}
+	//	{	0		sy		0		0	}
+	//	{	0		0		sz		0	}
+	//	{	0		0		0		1	}
+	
+	this->m0 = scale->x;
+	this->m1 = 0;
+	this->m2 = 0;
+	this->m3 = 0;
+	
+	this->m4 = 0;
+	this->m5 = scale->y;
+	this->m6 = 0;
+	this->m7 = 0;
+	
+	this->m8 = 0;
+	this->m9 = 0;
+	this->m10 = scale->z;
+	this->m11 = 0;
+	
+	this->m12 = 0;
+	this->m13 = 0;
+	this->m14 = 0;
+	this->m15 = 1.0;
 }
 
 // --- End of File ---

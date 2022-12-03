@@ -31,7 +31,6 @@ public:
 	void Cross(const Vect4D &vin, Vect4D &vout) const;
 	float &operator[](Vect e);
 	void norm(Vect4D &out) const;
-	void set(float tx, float ty, float tz, float tw = 1.0f);
 
 	Vect4D operator * (const float scale) const;
 	Vect4D& operator *= (float scale);

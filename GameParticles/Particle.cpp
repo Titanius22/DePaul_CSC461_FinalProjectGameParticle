@@ -7,33 +7,18 @@
 const Vect4D Particle::Z_AXIS(0.0f, 0.0f, -5.0f);
 const float Particle::ROTATION_VELOCITY(0.15f);
 
-//Particle::Particle()
-//	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
-//	  position(Vect4D(0.0f, 0.0f, -6.0f)),
-//	  velocity(Vect4D(-1.0f, 0.0f, 0.0f)),
-//	  scale(Vect4D(1.0f, 1.0f, 1.0f)),
-//	  rotation_velocity(0.15f)
-//{}
-
 Particle::Particle(const Particle& srcParticle)
-	: next(nullptr), prev(nullptr), life(srcParticle.life), rotation(srcParticle.rotation),
-	position(srcParticle.position),
+	: position(srcParticle.position),
 	velocity(srcParticle.velocity),
-	scale(srcParticle.scale)
-{}
-
-Particle::Particle(const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale)
-	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
-	position(_position),
-	velocity(_velocity),
-	scale(_scale)
+	scaleMatrix(srcParticle.scaleMatrix),
+	life(srcParticle.life), rotation(srcParticle.rotation)
 {}
 
 Particle::Particle(const ParticleEmitter* const pParticleEmitter)
-	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
-	position(pParticleEmitter->start_position),
+	: position(pParticleEmitter->start_position),
 	velocity(pParticleEmitter->start_velocity),
-	scale(pParticleEmitter->start_scale)
+	life(0.0f), rotation(0.0f)
+	
 {
 	// x - variance
 	float var = static_cast<float>(rand() % 1000);
@@ -128,18 +113,22 @@ Particle::Particle(const ParticleEmitter* const pParticleEmitter)
 	}
 
 
+
 	// correct the sign
+	Vect4D tmpVect(pParticleEmitter->start_scale);
 	var = static_cast<float>(rand() % 1000);
 	sign = rand() % 2;
 
 	if (sign == 0)
 	{
-		this->scale *= (var * (1.20f * 0.001f * -3.0f));
+		tmpVect *= (var * (1.20f * 0.001f * -3.0f));
 	}
 	else
 	{
-		this->scale *= (var * (1.20f * 0.001f));
+		tmpVect *= (var * (1.20f * 0.001f));
 	}
+
+	this->scaleMatrix.setScaleMatrix(&tmpVect);
 }
 
 Particle::~Particle()
