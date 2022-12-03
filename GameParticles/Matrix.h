@@ -47,10 +47,11 @@ public:
 	);
 
 	void set(const MatrixRow row, Vect4D *t );
-	void get(const MatrixRow row, Vect4D *vOut );
+	void get(const MatrixRow row, Vect4D *vOut ) const;
 
-	void setTransMatrix(const Vect4D *t );
-	void setScaleMatrix(const Vect4D *s );
+	void setTransMatrix(const Vect4D* const t );
+	static Matrix getTransMatrix(const Vect4D t);
+	void setScaleMatrix(const Vect4D* const s );
 	void setRotZMatrix(const float Z_Radians );
 
 	float &operator[]( Index e);
@@ -59,12 +60,12 @@ public:
 	Matrix operator*(const float s );
 	Matrix operator-(const Matrix& t) const;
 
-	float Determinant();
+	float Determinant() const;
 	
-	Matrix GetAdjugate();
+	Matrix GetAdjugate() const;
 	Matrix& operator/=(const float t);
 	
-	void Inverse( Matrix &out );
+	static Matrix Inverse(const Matrix in);
 	
 private:
 	union

@@ -21,15 +21,16 @@ public:
 	
 	void SpawnParticle();
 	void update();
-	void draw();
+	void draw() const;
 
 	void addParticleToList(Particle *p );
 	void removeParticleFromList( Particle *p );
 
-	void Execute(Particle* srcParticle);
+	void Execute(Particle* srcParticle) const;
 
-	const static Matrix IDENT_MATRIX;
 	const static Matrix TRANS_CAMERA_MATRIX;
+	const static Matrix INVERSE_TRANS_CAMERA_MATRIX;
+	const static Matrix TRANS_INVERSE_TRANS_CAMERA_MATRIX;
 
 private:
 	const Vect4D	start_position;

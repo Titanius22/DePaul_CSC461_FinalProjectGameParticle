@@ -23,14 +23,13 @@ ParticleEmitter::ParticleEmitter()
 	vel_variance(-29.0f * 0.0001f, 0.70f * 0.0001f, -1.0f * 0.001f),
 	pos_variance(-3.50f * 0.0001f, 3.50f * 0.0001f, 5.0f * 0.001f),
 	scale_variance(3.0f)
-	//,particle_list(NUM_PARTICLES)
 {
 	// nothing to do
 }
 
 ParticleEmitter::~ParticleEmitter()
 {
-	Particle *pTmp = this->headParticle;
+	Particle* pTmp = this->headParticle;
 	Particle* pDeleteMe;
 	while (pTmp != nullptr)
 	{
@@ -43,7 +42,7 @@ ParticleEmitter::~ParticleEmitter()
 void ParticleEmitter::SpawnParticle()
 {
 	// create AND initialize new particle
-	Particle *newParticle = new Particle(0.0f, start_position, start_velocity, start_scale);
+	Particle *newParticle = new Particle(start_position, start_velocity, start_scale);
 
 	// apply the variance
 	this->Execute(newParticle);
@@ -81,11 +80,11 @@ void ParticleEmitter::update()
 	// total elapsed
 	time_elapsed = current_time - last_loop;
 
-	Particle *p = this->headParticle;
+	Particle* p = this->headParticle;
 	// walk the particles
 
 	// temp Particle
-	Particle* pTemp;
+	Particle* pParticleToDelete;
 
 	while( p != nullptr )
 	{
@@ -97,11 +96,13 @@ void ParticleEmitter::update()
 		// remove node
 		if((last_active_particle > 0) && (p->life > max_life))
 		{
+			pParticleToDelete = p;
+			
 			// increment to next point
 			p = p->next;
 
 			// remove prev node
-			this->removeParticleFromList(p->prev);
+			this->removeParticleFromList(pParticleToDelete);
 
 			// update the number of particles
 			last_active_particle--;
@@ -118,37 +119,29 @@ void ParticleEmitter::update()
 	last_loop = current_time;
 }
 
-void ParticleEmitter::draw()
+void ParticleEmitter::draw() const
 {
-	// get the trans of the camera matrix
-	Matrix tmp(IDENT_MATRIX * TRANS_CAMERA_MATRIX);
+	// get the position from this matrix
+	//Vect4D camPosVect(INVERSE_TRANS_CAMERA_MATRIX.v3_m128);
 
-	// get the inverse matrix
-	Matrix inverseCameraMatrix;
-	tmp.Inverse(inverseCameraMatrix);
+	//// camera position
+	//Matrix transCamera;
+	//transCamera.setTransMatrix( &camPosVect );
+
+	Matrix tmp;
 
 	// iterate throught the list of particles
 	Particle* p = this->headParticle;
 	while(p != nullptr)
 	{
 		assert(p != nullptr);
-		
-		// get the position from this matrix
-		Vect4D camPosVect;
-		inverseCameraMatrix.get( Matrix::MatrixRow::MATRIX_ROW_3, &camPosVect );
-
-		// camera position
-		Matrix transCamera;
-		transCamera.setTransMatrix( &camPosVect );
 
 		// particle position
 		Matrix transParticle;
-		//transParticle.setTransMatrix( &it->position );
 		transParticle.setTransMatrix(&(p->position));
 
 		// rotation matrix
 		Matrix rotParticle;
-		//rotParticle.setRotZMatrix( it->rotation );
 		rotParticle.setRotZMatrix(p->rotation);
 
 		// pivot Point
@@ -162,7 +155,7 @@ void ParticleEmitter::draw()
 		scaleMatrix.setScaleMatrix( &(p->scale) );
 		
 		// total transformation of particle
-		tmp = scaleMatrix * transCamera * transParticle * rotParticle * scaleMatrix;
+		tmp = scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * scaleMatrix;
 
 		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
@@ -220,7 +213,7 @@ void ParticleEmitter::removeParticleFromList(Particle* p)
 	delete p;
 }
 
-void ParticleEmitter::Execute(Particle* srcParticle)
+void ParticleEmitter::Execute(Particle* srcParticle) const
 {
 	// Ses it's ugly - I didn't write this so don't bitch at me
 	// Sometimes code like this is inside real commerical code ( so know you now how it feels )
@@ -284,7 +277,7 @@ void ParticleEmitter::Execute(Particle* srcParticle)
 	else
 	{
 		// positive var
-		srcParticle->position.x += t_var * var;
+		srcParticle->velocity.x += t_var * var;
 	}
 	
 	// y - add velocity
@@ -299,7 +292,7 @@ void ParticleEmitter::Execute(Particle* srcParticle)
 	else
 	{
 		// positive var
-		srcParticle->position.y += t_var * var;
+		srcParticle->velocity.y += t_var * var;
 	}
 	
 	// z - add velocity
@@ -314,7 +307,7 @@ void ParticleEmitter::Execute(Particle* srcParticle)
 	else
 	{
 		// positive var
-		srcParticle->position.z += t_var * var;
+		srcParticle->velocity.z += t_var * var;
 	}
 	
 
@@ -332,18 +325,15 @@ void ParticleEmitter::Execute(Particle* srcParticle)
 	}
 }
 
-const Matrix ParticleEmitter::IDENT_MATRIX(
-	1.0f, 0.0f ,0.0f ,0.0f,
-	0.0f, 1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 0.0f, 1.0f
-);
-
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(
 	1.0f, 0.0f, 0.0f, 0.0f,
 	0.0f, 1.0f, 0.0f, 0.0f,
 	0.0f, 0.0f, 1.0f, 0.0f,
 	0.0f, 5.0f, 40.0f, 1.0f
 );
+
+const Matrix ParticleEmitter::INVERSE_TRANS_CAMERA_MATRIX = Matrix::Inverse(TRANS_CAMERA_MATRIX);
+
+const Matrix ParticleEmitter::TRANS_INVERSE_TRANS_CAMERA_MATRIX = Matrix::getTransMatrix(INVERSE_TRANS_CAMERA_MATRIX.v3_m128);
 
 // --- End of File ---

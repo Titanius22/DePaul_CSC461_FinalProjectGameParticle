@@ -14,12 +14,12 @@ class Particle
 public:
 	friend class ParticleEmitter;
 	
-	Particle();	
+	Particle() = delete;	
 	~Particle();
 	Particle(const Particle& srcParticle);
 	Particle& operator=(const Particle&) = delete;
 
-	Particle(const float _life, const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
+	Particle(const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
 
 	void Update(const float time_elapsed);
 
@@ -32,14 +32,9 @@ private:
 	Vect4D	position;
 	Vect4D	velocity;
 	Vect4D	scale;
-	float	rotation_velocity;
-
-	// dead space
-	float	pad0;
-	float	pad1;
-	float	pad2;
 
 	const static Vect4D Z_AXIS;
+	const static float ROTATION_VELOCITY;
 };
 
 #endif 

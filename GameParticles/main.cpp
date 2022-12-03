@@ -18,43 +18,38 @@ int main()
 
 	// initialize timers:------------------------------
 
-		// Create a timer objects
-		PerformanceTimer updateTimer;
-		PerformanceTimer drawTimer;
+	// Create a timer objects
+	PerformanceTimer updateTimer;
+	PerformanceTimer drawTimer;
 
 	// create an emitter:-------------------------------
-		ParticleEmitter emitter;
+	ParticleEmitter emitter;
 
-	// Get the inverse Camera Matrix:-------------------
+	// initialize the camera matrix
+	// IDENT_MATRIX is the camera matrix;
 
-		// multiply them together
-		Matrix tmp;
+	// setup the translation matrix
+	Matrix transMatrix;
+	Vect4D trans(0.0f, 3.0f, 3.0f);
+	transMatrix.setTransMatrix(&trans);
 
-		// counter for printing
-		int i = 0;
-		// initialize the camera matrix
-		// IDENT_MATRIX is the camera matrix;
+	// multiply them together
+	Matrix tmp = transMatrix;
 
-		// setup the translation matrix
-		Matrix transMatrix;
-		Vect4D trans(0.0f, 3.0f, 3.0f);
-		transMatrix.setTransMatrix(&trans);
+	// get the inverse matrix
+	Matrix inverseCameraMatrix = Matrix::Inverse(tmp);
 
-		// multiply them together
-		tmp = ParticleEmitter::IDENT_MATRIX * transMatrix;
-
-		// get the inverse matrix
-		Matrix inverseCameraMatrix;
-		tmp.Inverse(inverseCameraMatrix);
-
-		// ------------------------------------------------
-		//  Set the Camera Matrix
-		//  Note: 
-		//       this method is using doubles... 
-		//       there is a float version (hint)
-		// ------------------------------------------------
-		OpenGLDevice::SetCameraMatrixFloat((const float *)&inverseCameraMatrix);
+	// ------------------------------------------------
+	//  Set the Camera Matrix
+	//  Note: 
+	//       this method is using doubles... 
+	//       there is a float version (hint)
+	// ------------------------------------------------
+	OpenGLDevice::SetCameraMatrixFloat((const float *)&inverseCameraMatrix);
 	
+	// counter for printing
+	int i = 0;
+		
 	// main update loop... do this forever or until some breaks 
 	while(OpenGLDevice::IsRunning())
 	{

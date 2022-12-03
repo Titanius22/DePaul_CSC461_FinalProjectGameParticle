@@ -6,12 +6,9 @@
 #include "Vect4d.h"
 #include "Matrix.h"
 
-Matrix::Matrix()
-	: m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f),
-	  m4(0.0f), m5(0.0f), m6(0.0f), m7(0.0f),
-	  m8(0.0f), m9(0.0f), m10(0.0f), m11(0.0f),
-	  m12(0.0f), m13(0.0f), m14(0.0f), m15(0.0f)
-{}
+Matrix::Matrix(){
+	// can't set this to default.
+}
 
 Matrix::Matrix(
 	const float _m0,  const float _m1,  const float _m2,  const float _m3,
@@ -65,6 +62,38 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	this->m13 = t->y;
 	this->m14 = t->z;
 	this->m15 = 1.0f;
+}
+
+Matrix Matrix::getTransMatrix(const Vect4D t)
+{
+	//	{	1		0		0		0	}
+	//	{	0		1		0		0	}
+	//	{	0		0		1		0	}
+	//	{	x		y		z		1	}
+
+	Matrix tmp;
+
+	tmp.m0 = 1.0f;
+	tmp.m1 = 0.0f;
+	tmp.m2 = 0.0f;
+	tmp.m3 = 0.0f;
+
+	tmp.m4 = 0.0f;
+	tmp.m5 = 1.0f;
+	tmp.m6 = 0.0f;
+	tmp.m7 = 0.0f;
+
+	tmp.m8 = 0.0f;
+	tmp.m9 = 0.0f;
+	tmp.m10 = 1.0f;
+	tmp.m11 = 0.0f;
+
+	tmp.m12 = t.x;
+	tmp.m13 = t.y;
+	tmp.m14 = t.z;
+	tmp.m15 = 1.0f;
+
+	return tmp;
 }
 
 void Matrix::set(const MatrixRow row, Vect4D *t )
@@ -165,7 +194,7 @@ float &Matrix::operator[](Index e)
 	}
 }
 
-void Matrix::get(const MatrixRow row, Vect4D *t )
+void Matrix::get(const MatrixRow row, Vect4D *t ) const
 { // get a row of the matrix
 	switch( row )
 	{
@@ -265,7 +294,7 @@ Matrix& Matrix::operator/=(const float rhs)
 	return *this;
 }
 
-float Matrix::Determinant() 
+float Matrix::Determinant() const
 {
 	float ta = (m10 * m15) - (m11 * m14);
 	// tb = (kq - mo)
@@ -286,7 +315,7 @@ float Matrix::Determinant()
 	
 }
 
-Matrix Matrix::GetAdjugate() 
+Matrix Matrix::GetAdjugate() const
 {
 	Matrix tmp;
 	
@@ -382,21 +411,22 @@ Matrix Matrix::GetAdjugate()
 	return tmp;
 }
 
-void Matrix::Inverse( Matrix &out ) 
+Matrix Matrix::Inverse(const Matrix in)
 {
 	Matrix tmp;
-	float det = Determinant();
-	if(fabs(det) < 0.0001)
+	float det = in.Determinant();
+	if(fabs(det) >= 0.0001)
 	{
-		// do nothing, Matrix is not invertable
+		tmp = in.GetAdjugate();
+		tmp /= det;
 	}
 	else
 	{
-		tmp = GetAdjugate();
-		tmp /= det;
+		// do nothing, Matrix is not invertable
+		std::cout << "what is happening";
 	}
 
-	out = tmp;
+	return tmp;
 }
 
 void Matrix::setScaleMatrix(const Vect4D *scale)
