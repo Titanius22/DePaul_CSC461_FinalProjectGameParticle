@@ -18,6 +18,7 @@ public:
 	Particle(const Particle& srcParticle);
 	Particle& operator=(const Particle&) = delete;
 
+	Particle(const float _life, const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
 
 	void Update(const float& time_elapsed);
 	//void CopyDataOnly( Particle *p );

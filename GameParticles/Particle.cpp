@@ -21,6 +21,16 @@ Particle::Particle(const Particle& srcParticle)
 	rotation_velocity(srcParticle.rotation_velocity)
 {}
 
+Particle::Particle(const float _life, const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale)
+	: next(nullptr), prev(nullptr), life(_life), rotation(0.0f),
+	position(_position),
+	velocity(_velocity),
+	scale(_scale),
+	rotation_velocity(0.15f)
+{
+
+}
+
 Particle::~Particle()
 {
 	// nothing to do

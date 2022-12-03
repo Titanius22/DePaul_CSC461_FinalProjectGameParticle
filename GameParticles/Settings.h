@@ -16,7 +16,7 @@
                              //   Test ONLY CPU performance (used for final grading)
 
 #if CPU_WITH_GRAPHICS
-    #define NUM_PARTICLES	(25 * 1000 )  //Vary setting between 5K to 200K for development
+    #define NUM_PARTICLES	(5 * 1000 )  //Vary setting between 5K to 200K for development
     #define MAX_LIFE		(20.0f)       //leave at 20 for final testing
     #define PRINT_COUNT     20
 #else

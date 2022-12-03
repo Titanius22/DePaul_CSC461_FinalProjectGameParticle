@@ -10,7 +10,8 @@ PerformanceTimer globalTimer;
 
 ParticleEmitter::ParticleEmitter()
 :	start_position( -1.0f, -4.0f, 1.0f),
-	start_velocity( -2.0f, 3.0f, -0.10f), 
+	start_velocity( -2.0f, 3.0f, -0.10f),
+	start_scale(-1.0f, -1.0f, -1.0f, 1.0f),
 	spawn_frequency(0.00001f),		
 	last_spawn(globalTimer.GetGlobalTime()),		
 	last_loop(globalTimer.GetGlobalTime()),
@@ -19,21 +20,21 @@ ParticleEmitter::ParticleEmitter()
 	last_active_particle(-1),
 	bufferCount(0),
 	headParticle(nullptr),
-	vel_variance(-29.0f, 0.70f, -1.0f),
-	pos_variance(-3.50f, 3.50f, 5.0f),
+	vel_variance(-29.0f * 0.0001f, 0.70f * 0.0001f, -1.0f * 0.001f),
+	pos_variance(-3.50f * 0.0001f, 3.50f * 0.0001f, 5.0f * 0.001f),
 	scale_variance(3.0f),
 	particle_list(NUM_PARTICLES)
 {
 	// nothing to do
-	bufferCount = 0;
 }
 
 ParticleEmitter::~ParticleEmitter()
 {
 	Particle *pTmp = this->headParticle;
+	Particle* pDeleteMe;
 	while (pTmp != nullptr)
 	{
-		Particle *pDeleteMe = pTmp;
+		pDeleteMe = pTmp;
 		pTmp = pTmp->next;
 		delete pDeleteMe;
 	}
@@ -41,29 +42,18 @@ ParticleEmitter::~ParticleEmitter()
 
 void ParticleEmitter::SpawnParticle()
 {
-	// create another particle if there are ones free
-	if( last_active_particle < max_particles-1 )
-	{
-	
-		// create new particle
-		Particle *newParticle = new Particle();
 
-		// initialize the particle
-		newParticle->life     = 0.0f;
-		newParticle->position = start_position;
-		newParticle->velocity = start_velocity;
-		newParticle->scale    = Vect4D(-1.0f, -1.0f, -1.0f, 1.0f);
+	// create AND initialize new particle
+	Particle *newParticle = new Particle(0.0f, start_position, start_velocity, start_scale);
 
-		// apply the variance
-		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
+	// apply the variance
+	this->Execute(newParticle);
 
-		// increment count
-		last_active_particle++;
+	// increment count
+	last_active_particle++;
 
-		// add to list
-		this->addParticleToList( newParticle );
-
-	}
+	// add to list
+	this->addParticleToList( newParticle );
 }
 
 void ParticleEmitter::update()
@@ -74,15 +64,19 @@ void ParticleEmitter::update()
 	// spawn particles
 	float time_elapsed = current_time - last_spawn;
 	
-	// update
-	while( spawn_frequency < time_elapsed )
+	// check if particles need to get added.....
+	if (last_active_particle < max_particles - 1)
 	{
-		// spawn a particle
-		this->SpawnParticle();
-		// adjust time
-		time_elapsed -= spawn_frequency;
-		// last time
-		last_spawn = current_time;
+		// add particles while while there are more to add
+		while ((spawn_frequency < time_elapsed) && (last_active_particle < max_particles - 1))
+		{
+			// spawn a particle
+			this->SpawnParticle();
+			// adjust time
+			time_elapsed -= spawn_frequency;
+			// last time
+			last_spawn = current_time;
+		}
 	}
 	
 	// total elapsed
@@ -90,6 +84,9 @@ void ParticleEmitter::update()
 
 	Particle *p = this->headParticle;
 	// walk the particles
+
+	// temp Particle
+	Particle* pTemp;
 
 	while( p != nullptr )
 	{
@@ -101,14 +98,13 @@ void ParticleEmitter::update()
 		// remove node
 		if((last_active_particle > 0) && (p->life > max_life))
 		{
-			// particle to remove
-			Particle *s = p;
-
+			pTemp = p;
+			
 			// need to squirrel it away.
 			p=p->next;
 
-			// remove last node
-			this->removeParticleFromList( s );
+			// remove prev node
+			this->removeParticleFromList(pTemp);
 
 			// update the number of particles
 			last_active_particle--;
@@ -151,14 +147,14 @@ void ParticleEmitter::addParticleToList(Particle *p )
 	if( this->headParticle == nullptr )
 	{ // first on list
 		this->headParticle = p;
-		p->next = 0;
-		p->prev= 0;
+		p->next = nullptr;
+		p->prev= nullptr;
 	}
 	else 
 	{ // add to front of list
 		headParticle->prev = p;
 		p->next = headParticle;
-		p->prev = 0;
+		p->prev = nullptr;
 		headParticle = p;
 	}
 
@@ -277,87 +273,118 @@ void ParticleEmitter::draw()
 	drawBuffer.clear();
 }
 
-void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
+void ParticleEmitter::Execute(Particle* srcParticle)
 {
 	// Ses it's ugly - I didn't write this so don't bitch at me
 	// Sometimes code like this is inside real commerical code ( so know you now how it feels )
 	
 	// x - variance
-	float var = static_cast<float>(rand() % 1000) * 0.0001f;
-	float sign = static_cast<float>(rand() % 2);
-	float *t_pos = reinterpret_cast<float*>(&pos);
-	float *t_var = &pos_variance[Vect::X];
+	float var = static_cast<float>(rand() % 1000);
+	int sign = rand() % 2;
+	float t_var = pos_variance.x;
 	if(sign == 0)
 	{
-		var *= -1.0f;
+		// negative var
+		srcParticle->position.x -= t_var * var;
 	}
-	*t_pos += *t_var * var;
+	else
+	{
+		// positive var
+		srcParticle->position.x += t_var * var;
+	}
 
 	// y - variance
-	var = static_cast<float>(rand() % 1000) * 0.0001f;
-	sign = static_cast<float>(rand() % 2);
-	t_pos++;
-	t_var++;
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pos_variance.y;
 	if(sign == 0)
 	{
-		var *= -1.0f;
+		// negative var
+		srcParticle->position.y -= t_var * var;
 	}
-	*t_pos += *t_var * var;
+	else
+	{
+		// positive var
+		srcParticle->position.y += t_var * var;
+	}
 	
 	// z - variance
-	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
-	t_pos++;
-	t_var++;
-	if(sign == 0)
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pos_variance.z;
+	if (sign == 0)
 	{
-		var *= -1.0f;
+		// negative var
+		srcParticle->position.z -= t_var * var;
 	}
-	*t_pos += *t_var * var;
-	
-	var = static_cast<float>(rand() % 1000) * 0.0001f;
-	sign = static_cast<float>(rand() % 2);
-	
+	else
+	{
+		// positive var
+		srcParticle->position.z += t_var * var;
+	}
+
+
+
 	// x  - add velocity
-	t_pos = &vel[Vect::X];
-	t_var = &vel_variance[Vect::X];
-	if(sign == 0)
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = vel_variance.x;
+	if (sign == 0)
 	{
-		var *= -1.0f;
+		// negative var
+		srcParticle->velocity.x -= t_var * var;
 	}
-	*t_pos += *t_var * var;
+	else
+	{
+		// positive var
+		srcParticle->position.x += t_var * var;
+	}
 	
 	// y - add velocity
-	var = static_cast<float>(rand() % 1000) * 0.0001f;
-	sign = static_cast<float>(rand() % 2);
-	t_pos++;
-	t_var++;
-	if(sign == 0)
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = vel_variance.y;
+	if (sign == 0)
 	{
-		var *= -3.0f;
+		// negative var
+		srcParticle->velocity.y -= var * (t_var * 3.0f);
 	}
-	*t_pos += *t_var * var;
+	else
+	{
+		// positive var
+		srcParticle->position.y += t_var * var;
+	}
 	
 	// z - add velocity
-	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
-	t_pos++;
-	t_var++;
-	if(sign == 0)
+	var = static_cast<float>(rand() % 1000);
+	sign = static_cast<int>(rand() % 2);
+	t_var = vel_variance.z;
+	if (sign == 0)
 	{
-		var *= -3.0f;
+		// negative var
+		srcParticle->velocity.z -= var * (t_var * 3.0f);
 	}
-	*t_pos += *t_var * var;
+	else
+	{
+		// positive var
+		srcParticle->position.z += t_var * var;
+	}
 	
+
 	// correct the sign
-	var = 1.20f * static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
+	var =  static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
 	
 	if(sign == 0)
 	{
-		var *= -3.0f;
+		srcParticle->scale *= (var * (1.20f * 0.001f * -3.0f));
 	}
-	sc = sc * var;
+	else
+	{
+		srcParticle->scale *= (var * (1.20f * 0.001f));
+	}
+	
+	
 }
 
 // --- End of File ---

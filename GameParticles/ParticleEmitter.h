@@ -16,6 +16,8 @@ class ParticleEmitter
 public:
 	ParticleEmitter();
 	~ParticleEmitter();
+	ParticleEmitter(const ParticleEmitter&) = delete;
+	ParticleEmitter& operator=(const ParticleEmitter&) = delete;
 	
 	void SpawnParticle();
 	void update();
@@ -24,24 +26,25 @@ public:
 	void addParticleToList(Particle *p );
 	void removeParticleFromList( Particle *p );
 
-	void Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc);
+	void Execute(Particle* srcParticle);
 
 private:
-	Vect4D	start_position;
-	Vect4D	start_velocity;
+	const Vect4D	start_position;
+	const Vect4D	start_velocity;
+	const Vect4D	start_scale;
 
-	float	spawn_frequency;
+	const float	spawn_frequency;
 	float	last_spawn;
 	float	last_loop;	
-	float	max_life;
-	int		max_particles;
+	const float	max_life;
+	const int		max_particles;
 	int		last_active_particle;
 
 	// added for speed efficiency
 	int bufferCount;
 	Particle *headParticle;
-	Vect4D	vel_variance;
-	Vect4D	pos_variance;
+	const Vect4D	vel_variance;
+	const Vect4D	pos_variance;
 	float	scale_variance;
 	std::list<Particle> drawBuffer;
 	std::list<Particle> particle_list;
