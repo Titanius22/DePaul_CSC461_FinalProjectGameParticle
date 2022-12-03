@@ -122,12 +122,8 @@ void ParticleEmitter::update()
 void ParticleEmitter::draw() const
 {
 	Matrix tmp;
-
-	// particle position
-	Matrix transParticle(Matrix::IDENTITY_MATRIX);
-
-	// rotation matrix
-	Matrix rotParticle(Matrix::IDENTITY_MATRIX);
+	float cosVar;
+	float sinVar;
 
 	// iterate throught the list of particles
 	Particle* p = headParticle;
@@ -142,15 +138,37 @@ void ParticleEmitter::draw() const
 			p = pParticleBlockStart;
 		}
 		
-		// particle position
-		//transParticle.setTransMatrix(&(p->position));
-
-		// rotation matrix
-		//rotParticle.setRotZMatrix(p->rotation);
-		
 		// total transformation of particle
-		//tmp = p->scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * p->scaleMatrix;
-		tmp = superMegaFastMatrixCalculator(p->scaleVect, p->position, p->rotation);
+		///////////////////////////////////////////////////////////////////////////////
+		//tmp = superMegaFastMatrixCalculator(p->scaleVect, p->position, p->rotation);
+		cosVar = cos(p->rotation);
+		sinVar = sin(p->rotation);
+
+		tmp.v0_m128 = _mm_set_ps(0.0f, 0.0f, sinVar, cosVar);
+		tmp.v1_m128 = _mm_set_ps(0.0f, 0.0f, cosVar, -sinVar);
+		tmp.v2_m128 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+		tmp.v3_m128 =
+			_mm_hadd_ps(
+				_mm_mul_ps(
+					_mm_add_ps(
+						_mm_set_ps(TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12),
+						_mm_set_ps(p->position.y, p->position.x, p->position.y, p->position.x)
+					),
+					_mm_set_ps(cosVar, -sinVar, sinVar, cosVar)
+				),
+				_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, p->position.z) // second arg is NA
+			);
+
+		tmp.v0_m128 = _mm_mul_ps(tmp.v0_m128, p->scaleVect._m);
+		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, p->scaleVect._m);
+		//tmp.v2.z = _scaleVec.z; this operation was combined below
+		tmp.v3_m128 = _mm_mul_ps(tmp.v3_m128, p->scaleVect._m);
+
+		tmp.v0_m128 = _mm_mul_ps(tmp.v0_m128, _mm_set1_ps(p->scaleVect.x));
+		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, _mm_set1_ps(p->scaleVect.y));
+		tmp.v2.z = p->scaleVect.z * p->scaleVect.z; // combined with above
+		// no need. this would be xxx*1
+		///////////////////////////////////////////////////////////////////////////////
 
 		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);

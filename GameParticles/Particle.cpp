@@ -7,13 +7,6 @@
 const Vect4D Particle::Z_AXIS(0.0f, 0.0f, -5.0f);
 const float Particle::ROTATION_VELOCITY(0.15f);
 
-Particle::Particle(const Particle& srcParticle)
-	: position(srcParticle.position),
-	velocity(srcParticle.velocity),
-	scaleMatrix(srcParticle.scaleMatrix),
-	life(srcParticle.life), rotation(srcParticle.rotation)
-{}
-
 Particle::Particle(const ParticleEmitter* const pParticleEmitter)
 	: position(pParticleEmitter->start_position),
 	velocity(pParticleEmitter->start_velocity),

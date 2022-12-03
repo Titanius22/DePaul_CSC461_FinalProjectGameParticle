@@ -17,7 +17,7 @@ public:
 	
 	Particle() = delete;	
 	~Particle();
-	Particle(const Particle& srcParticle);
+	Particle(const Particle& srcParticle) = default;
 	Particle& operator=(const Particle&) = delete;
 
 	Particle(const ParticleEmitter* const pParticleEmitter);
@@ -27,7 +27,6 @@ public:
 private:
 	Vect4D	position;
 	Vect4D	velocity;
-	Matrix	scaleMatrix;
 
 	float	life;
 	float	rotation;
