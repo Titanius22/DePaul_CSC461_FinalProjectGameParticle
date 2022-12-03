@@ -19,7 +19,7 @@ public:
 	friend class ParticleEmitter;
 	friend class Particle;
 
-	Vect4D();
+	Vect4D() = default;
 	~Vect4D();
 	Vect4D(const Vect4D&) = default;
 	Vect4D& operator=(const Vect4D&) = default;

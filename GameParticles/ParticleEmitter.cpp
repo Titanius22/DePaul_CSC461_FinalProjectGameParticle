@@ -92,9 +92,6 @@ void ParticleEmitter::update()
 	Particle* p = this->headParticle;
 	// walk the particles
 
-	// temp Particle
-	//Particle* pParticleToDelete;
-
 	do
 	{
 		// placing this at the beginning allows p==pParticleBlockEnd to go 

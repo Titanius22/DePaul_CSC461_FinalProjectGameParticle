@@ -440,28 +440,25 @@ void Matrix::setRotZMatrix(const float az)
 	//	{	0		0		1		0	}
 	//	{	0		0		0		1	}
 	
-	Matrix tmp;
-	tmp.m0 = cos(az);
-	tmp.m1 = -sin(az);
-	tmp.m2 = 0;
-	tmp.m3 = 0;
+	this->m0 = cos(az);
+	this->m1 = -sin(az);
+	this->m2 = 0;
+	this->m3 = 0;
 	
-	tmp.m4 = sin(az);
-	tmp.m5 = cos(az);
-	tmp.m6 = 0;
-	tmp.m7 = 0;
+	this->m4 = sin(az);
+	this->m5 = cos(az);
+	this->m6 = 0;
+	this->m7 = 0;
 	
-	tmp.m8 = 0;
-	tmp.m9 = 0;
-	tmp.m10 = 1;
-	tmp.m11 = 0;
+	this->m8 = 0;
+	this->m9 = 0;
+	this->m10 = 1;
+	this->m11 = 0;
 	
-	tmp.m12 = 0;
-	tmp.m13 = 0;
-	tmp.m14 = 0;
-	tmp.m15 = 1;
-	
-	*this = tmp;
+	this->m12 = 0;
+	this->m13 = 0;
+	this->m14 = 0;
+	this->m15 = 1;
 }
 
 void Matrix::setScaleMatrix(const Vect4D *scale)

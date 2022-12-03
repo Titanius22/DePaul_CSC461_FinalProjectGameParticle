@@ -4,10 +4,6 @@
 
 #include "Vect4D.h"
 
-Vect4D::Vect4D()
-	: x(0.0f), y(0.0f), z(0.0f), w(1.0f)
-{}
-
 Vect4D::Vect4D(const float tx, const float ty, const float tz, const float tw)
 	: x(tx), y(ty), z(tz), w(tw)
 {}
