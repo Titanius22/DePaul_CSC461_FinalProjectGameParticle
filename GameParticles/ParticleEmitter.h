@@ -24,7 +24,6 @@ public:
 	void SpawnParticle();
 	void update();
 	void draw() const;
-	Matrix superMegaFastMatrixCalculator(Vect4D _scaleVec, Vect4D _posVec, float _rotation) const;
 
 	const static Matrix TRANS_CAMERA_MATRIX;
 	const static Matrix INVERSE_TRANS_CAMERA_MATRIX;
@@ -42,7 +41,7 @@ private:
 
 	const Vect4D	vel_variance;
 	const Vect4D	pos_variance;
-	const float	scale_variance;
+	const float		scale_variance;
 
 	// List data
 	Particle* const pParticleBlockStart;

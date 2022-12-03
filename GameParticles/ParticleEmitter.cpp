@@ -5,6 +5,7 @@
 #include "OpenGLDevice.h"
 #include "ParticleEmitter.h"
 #include "Settings.h"
+#include <vector>
 
 PerformanceTimer globalTimer;
 
@@ -123,11 +124,14 @@ void ParticleEmitter::draw() const
 {
 	Matrix tmp(Matrix::IDENTITY_MATRIX);
 	__m128 m128Tmp;
-	float cosVar;
-	float sinVar;
 
 	// iterate throught the list of particles
 	Particle* p = headParticle;
+	float tmpRot = p->rotation;
+	float tmpRotLimit = (tmpRot * 0.000001f) + tmpRot;
+	float cosVar = cos(p->rotation);
+	float sinVar = sin(p->rotation);
+
 	do
 	{
 		assert(p != nullptr);
@@ -139,10 +143,14 @@ void ParticleEmitter::draw() const
 			p = pParticleBlockStart;
 		}
 		
-		// total transformation of particle
-		///////////////////////////////////////////////////////////////////////////////
-		cosVar = cos(p->rotation);
-		sinVar = sin(p->rotation);
+		if(p->rotation > tmpRotLimit) // actual code is ((p->rotation - tmpRot) > (tmpRotLimit * 0.001f))
+		{
+			tmpRot = p->rotation;
+			tmpRotLimit = (tmpRot * 0.000001f) + tmpRot;
+			cosVar = cos(p->rotation);
+			sinVar = sin(p->rotation);
+		}
+
 		m128Tmp = _mm_set_ps(cosVar, -sinVar, sinVar, cosVar);
 
 		tmp.v0_m128.m128_u64[0] = m128Tmp.m128_u64[0];
@@ -151,13 +159,15 @@ void ParticleEmitter::draw() const
 		tmp.v3_m128 =
 			_mm_hadd_ps(
 				_mm_mul_ps(
-					_mm_add_ps(
-						_mm_set_ps(TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12),
-						_mm_set_ps(p->position.y, p->position.x, p->position.y, p->position.x)
+					_mm_set_ps(
+						TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13 + p->position.y,
+						p->position.x,
+						TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13 + p->position.y,
+						p->position.x
 					),
 					m128Tmp
 				),
-				_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, p->position.z) // second arg is NA
+				_mm_set_ps(1.0f, 0.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, p->position.z) // second arg is NA
 			);
 
 		m128Tmp = _mm_set1_ps(p->scaleVal * p->scaleVal);
@@ -166,7 +176,6 @@ void ParticleEmitter::draw() const
 		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, m128Tmp);
 		tmp.v2.z = m128Tmp.m128_f32[0];
 		tmp.v3_m128 = _mm_mul_ps(tmp.v3_m128, _mm_set1_ps(p->scaleVal));
-		///////////////////////////////////////////////////////////////////////////////
 
 		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
@@ -176,6 +185,7 @@ void ParticleEmitter::draw() const
 
 		assert(p != nullptr);
 	}while (p != tailParticle);
+
 }
 
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(

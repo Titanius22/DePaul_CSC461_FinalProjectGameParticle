@@ -10,6 +10,9 @@
 #include "Settings.h"
 #include "ParticleEmitter.h"
 
+PerformanceTimer T1;
+PerformanceTimer T2;
+
 int main()
 {
 	Trace::out("Num Particle: %.1e time:%.1f\n",(float)NUM_PARTICLES,MAX_LIFE);
@@ -39,12 +42,6 @@ int main()
 	// get the inverse matrix
 	Matrix inverseCameraMatrix = Matrix::Inverse(tmp);
 
-	// ------------------------------------------------
-	//  Set the Camera Matrix
-	//  Note: 
-	//       this method is using doubles... 
-	//       there is a float version (hint)
-	// ------------------------------------------------
 	OpenGLDevice::SetCameraMatrixFloat((const float *)&inverseCameraMatrix);
 	
 	// counter for printing
@@ -77,6 +74,15 @@ int main()
 			i = 0;
 			float updateTime = updateTimer.TimeInSeconds();
 			float drawTime = drawTimer.TimeInSeconds();
+			//updateTimer.Reset();
+			//drawTimer.Reset();
+
+			//float T1_time = T1.TimeInSeconds();
+			//float T2_time = T2.TimeInSeconds();
+			//T1.Reset();
+			//T2.Reset();
+
+			//printf("LoopTime: T1:%f ms  T2:%f ms  drawTotal:%f\n", T1_time * 1000.0f, T2_time * 1000.0f, drawTime * 1000.0f);
 			printf("LoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 		}
 	}
