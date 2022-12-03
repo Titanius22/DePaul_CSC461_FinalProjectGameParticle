@@ -121,7 +121,6 @@ Particle::Particle(const ParticleEmitter* const pParticleEmitter)
 		tmpVect *= (var * (1.20f * 0.001f));
 	}
 
-	//this->scaleMatrix.setScaleMatrix(&tmpVect);
 	this->scaleVect = tmpVect;
 }
 
@@ -138,6 +137,7 @@ void Particle::Update(const float time_elapsed)
 	Vect4D v;
 	position.Cross(Z_AXIS, v);
 	v.norm(v);
+	
 	position += (v * 0.05f * life);
 
 	rotation += (ROTATION_VELOCITY * time_elapsed) ;

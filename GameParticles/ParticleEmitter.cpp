@@ -121,7 +121,8 @@ void ParticleEmitter::update()
 
 void ParticleEmitter::draw() const
 {
-	Matrix tmp;
+	Matrix tmp(Matrix::IDENTITY_MATRIX);
+	__m128 m128Tmp;
 	float cosVar;
 	float sinVar;
 
@@ -140,13 +141,13 @@ void ParticleEmitter::draw() const
 		
 		// total transformation of particle
 		///////////////////////////////////////////////////////////////////////////////
-		//tmp = superMegaFastMatrixCalculator(p->scaleVect, p->position, p->rotation);
 		cosVar = cos(p->rotation);
 		sinVar = sin(p->rotation);
+		m128Tmp = _mm_set_ps(cosVar, -sinVar, sinVar, cosVar);
 
-		tmp.v0_m128 = _mm_set_ps(0.0f, 0.0f, sinVar, cosVar);
-		tmp.v1_m128 = _mm_set_ps(0.0f, 0.0f, cosVar, -sinVar);
-		tmp.v2_m128 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+		tmp.v0_m128.m128_u64[0] = m128Tmp.m128_u64[0];
+		tmp.v1_m128.m128_u64[0] = m128Tmp.m128_u64[1];
+		
 		tmp.v3_m128 =
 			_mm_hadd_ps(
 				_mm_mul_ps(
@@ -154,20 +155,15 @@ void ParticleEmitter::draw() const
 						_mm_set_ps(TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12),
 						_mm_set_ps(p->position.y, p->position.x, p->position.y, p->position.x)
 					),
-					_mm_set_ps(cosVar, -sinVar, sinVar, cosVar)
+					m128Tmp
 				),
 				_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, p->position.z) // second arg is NA
 			);
 
-		tmp.v0_m128 = _mm_mul_ps(tmp.v0_m128, p->scaleVect._m);
-		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, p->scaleVect._m);
-		//tmp.v2.z = _scaleVec.z; this operation was combined below
+		tmp.v0_m128 = _mm_mul_ps(_mm_mul_ps(tmp.v0_m128, p->scaleVect._m), _mm_set1_ps(p->scaleVect.x));
+		tmp.v1_m128 = _mm_mul_ps(_mm_mul_ps(tmp.v1_m128, p->scaleVect._m), _mm_set1_ps(p->scaleVect.y));
+		tmp.v2.z = p->scaleVect.z * p->scaleVect.z;
 		tmp.v3_m128 = _mm_mul_ps(tmp.v3_m128, p->scaleVect._m);
-
-		tmp.v0_m128 = _mm_mul_ps(tmp.v0_m128, _mm_set1_ps(p->scaleVect.x));
-		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, _mm_set1_ps(p->scaleVect.y));
-		tmp.v2.z = p->scaleVect.z * p->scaleVect.z; // combined with above
-		// no need. this would be xxx*1
 		///////////////////////////////////////////////////////////////////////////////
 
 		// use currrent matrix
@@ -178,41 +174,6 @@ void ParticleEmitter::draw() const
 
 		assert(p != nullptr);
 	}while (p != tailParticle);
-}
-
-Matrix ParticleEmitter::superMegaFastMatrixCalculator(Vect4D _scaleVec, Vect4D _posVec, float _rotation) const
-{
-	float cosVar = cos(_rotation);
-	float sinVar = sin(_rotation);
-
-	Matrix ma1ma2ma3ma4;
-	ma1ma2ma3ma4.v0_m128 = _mm_set_ps(0.0f, 0.0f, sinVar, cosVar);
-	ma1ma2ma3ma4.v1_m128 = _mm_set_ps(0.0f, 0.0f, cosVar, -sinVar);
-	ma1ma2ma3ma4.v2_m128 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-	ma1ma2ma3ma4.v3_m128 =
-		_mm_hadd_ps(
-			_mm_mul_ps(
-				//_mm_set_ps(ma1ma2.m13, ma1ma2.m12, ma1ma2.m13, ma1ma2.m12),
-				_mm_add_ps(
-					_mm_set_ps(TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12),
-					_mm_set_ps(_posVec.y, _posVec.x, _posVec.y, _posVec.x)
-				),
-				_mm_set_ps(cosVar, -sinVar, sinVar, cosVar)
-			),
-			_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, _posVec.z) // second arg is NA
-		);
-
-	ma1ma2ma3ma4.v0_m128 = _mm_mul_ps(ma1ma2ma3ma4.v0_m128, _scaleVec._m);
-	ma1ma2ma3ma4.v1_m128 = _mm_mul_ps(ma1ma2ma3ma4.v1_m128, _scaleVec._m);
-	//ma1ma2ma3ma4.v2.z = _scaleVec.z; this operation was combined below
-	ma1ma2ma3ma4.v3_m128 = _mm_mul_ps(ma1ma2ma3ma4.v3_m128, _scaleVec._m);
-
-	ma1ma2ma3ma4.v0_m128 = _mm_mul_ps(ma1ma2ma3ma4.v0_m128, _mm_set1_ps(_scaleVec.x));
-	ma1ma2ma3ma4.v1_m128 = _mm_mul_ps(ma1ma2ma3ma4.v1_m128, _mm_set1_ps(_scaleVec.y));
-	ma1ma2ma3ma4.v2.z = _scaleVec.z * _scaleVec.z; // combined with above
-	// no need. this would be xxx*1 
-
-	return ma1ma2ma3ma4;
 }
 
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(

@@ -7,7 +7,7 @@
 
 // Make sure you leave these setting to the default on final submission
 
-#define CPU_WITH_GRAPHICS 1  // Set CPU_WITH_GRAPHICS: 1 to verify Graphics and CPU performance
+#define CPU_WITH_GRAPHICS 0  // Set CPU_WITH_GRAPHICS: 1 to verify Graphics and CPU performance
                              //   Make sure graphics looks correct and shutdown doesn't leak
                              //        Memory Leak - 20% grade
                              //        Changed Graphics behavior - 50% grade 

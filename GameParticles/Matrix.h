@@ -108,88 +108,8 @@ public:
 			float m15;
 		};
 	};
-
-private:
-	friend struct MmulM;
-	friend struct MmulMmulM;
-	friend struct MmulMmulMmulM;
-	friend struct MmulMmulMmulMmulM;
 };
 
-
-// proxy stuff
-struct MmulM
-{
-	const Matrix& ma1;
-	const Matrix& ma2;
-
-	MmulM(const Matrix& _ma1, const Matrix& _ma2)
-		: ma1(_ma1), ma2(_ma2) {}
-
-	operator Matrix();
-};
-
-inline MmulM operator* (const Matrix& _ma1, const Matrix& _ma2)
-{
-	return MmulM(_ma1, _ma2);
-}
-
-
-struct MmulMmulM
-{
-	const Matrix& ma1;
-	const Matrix& ma2;
-	const Matrix& ma3;
-
-	MmulMmulM(const MmulM& _MmulM, const Matrix& _ma3)
-		: ma1(_MmulM.ma1), ma2(_MmulM.ma2), ma3(_ma3) {}
-
-	operator Matrix();
-};
-
-inline MmulMmulM operator* (const MmulM& _MmulM, const Matrix& _ma3)
-{
-	return MmulMmulM(_MmulM, _ma3);
-}
-
-
-struct MmulMmulMmulM
-{
-	const Matrix& ma1;
-	const Matrix& ma2;
-	const Matrix& ma3;
-	const Matrix& ma4;
-
-	MmulMmulMmulM(const MmulMmulM& _MmulMmulM, const Matrix& _ma4)
-		: ma1(_MmulMmulM.ma1), ma2(_MmulMmulM.ma2), ma3(_MmulMmulM.ma3), ma4(_ma4) {}
-
-	operator Matrix();
-};
-
-inline MmulMmulMmulM operator* (const MmulMmulM& _MmulMmulM, const Matrix& _ma4)
-{
-	return MmulMmulMmulM(_MmulMmulM, _ma4);
-}
-
-
-struct MmulMmulMmulMmulM
-{
-	const Matrix& ma1;
-	const Matrix& ma2;
-	const Matrix& ma3;
-	const Matrix& ma4;
-	const Matrix& ma5;
-
-	MmulMmulMmulMmulM(const MmulMmulMmulM& _MmulMmulMmulM, const Matrix& _ma5)
-		: ma1(_MmulMmulMmulM.ma1), ma2(_MmulMmulMmulM.ma2), ma3(_MmulMmulMmulM.ma3), ma4(_MmulMmulMmulM.ma4), ma5(_ma5) {}
-
-	operator Matrix();
-};
-
-inline MmulMmulMmulMmulM operator* (const MmulMmulMmulM& _MmulMmulMmulM, const Matrix& _ma5)
-{
-	return MmulMmulMmulMmulM(_MmulMmulMmulM, _ma5);
-}
 #endif  
 
 // --- End of File ---
