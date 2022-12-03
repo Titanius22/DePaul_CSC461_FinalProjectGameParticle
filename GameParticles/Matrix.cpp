@@ -336,6 +336,7 @@ void Matrix::setRotZMatrix(const float az)
 	assert(this->m15 == 1);
 }
 
+// only run when particle is created
 void Matrix::setScaleMatrix(const Vect4D *scale)
 {
 	//	{	sx		0		0		0	}
@@ -383,6 +384,392 @@ MmulM::operator Matrix()
 	}
 	return returnVal;
 }
+
+//MmulMmulMmulMmulM::operator Matrix()
+//{
+//	// returnVal1 = m1*m2
+//	Matrix returnVal1;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->x)),
+//				_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->z)),
+//				_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal2 = returnVal1*m3
+//	Matrix returnVal2;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma3.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
+//				_mm_mul_ps(ma3.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma3.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
+//				_mm_mul_ps(ma3.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal1 = returnVal2*m4
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->x)),
+//				_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->z)),
+//				_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal2 = returnVal1*m4
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
+//				_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
+//				_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal2 = ma1*ma2*ma3*ma4*ma5
+//	return returnVal2;
+//}
+
+//MmulMmulMmulMmulM::operator Matrix()
+//{
+//	// returnVal2 = m3*m4
+//	Matrix returnVal2;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(((Vect4D*)&ma3 + i)->x)),
+//				_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(((Vect4D*)&ma3 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(((Vect4D*)&ma3 + i)->z)),
+//				_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(((Vect4D*)&ma3 + i)->w))
+//			)
+//		);
+//	}
+//	
+//	
+//	// returnVal1 = m1*m2
+//	Matrix returnVal1;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->x)),
+//				_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->z)),
+//				_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal2 = returnVal2*m5
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->x)),
+//				_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->z)),
+//				_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal1 = returnVal1*returnVal2
+//	for (int i = 0; i < 4; i++)
+//	{
+//		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
+//			_mm_add_ps(
+//				_mm_mul_ps(returnVal2.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
+//				_mm_mul_ps(returnVal2.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
+//			),
+//			_mm_add_ps(
+//				_mm_mul_ps(returnVal2.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
+//				_mm_mul_ps(returnVal2.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
+//			)
+//		);
+//	}
+//
+//
+//	// returnVal1 = ma1*ma2*ma3*ma4*ma5
+//	return returnVal1;
+//}
+
+//MmulMmulMmulMmulM::operator Matrix()
+//{
+//	// returnVal2 = m3*m4
+//	Matrix returnVal2;
+//	returnVal2.v0_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(ma3.v0.x)),
+//			_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(ma3.v0.y))
+//		),
+//		_mm_add_ps(
+//			_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(ma3.v0.z)),
+//			_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(ma3.v0.w))
+//		)
+//	);
+//	returnVal2.v1_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(ma3.v1.x)),
+//			_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(ma3.v1.y))
+//		),											 
+//		_mm_add_ps(									 
+//			_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(ma3.v1.z)),
+//			_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(ma3.v1.w))
+//		)
+//	);
+//	returnVal2.v2_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(ma3.v2.x)),
+//			_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(ma3.v2.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(ma3.v2.z)),
+//			_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(ma3.v2.w))
+//		)
+//	);
+//	returnVal2.v3_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(ma3.v3.x)),
+//			_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(ma3.v3.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(ma3.v3.z)),
+//			_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(ma3.v3.w))
+//		)
+//	);
+//
+//
+//	// returnVal1 = m1*m2
+//	Matrix returnVal1;
+//	returnVal1.v0_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(ma1.v0.x)),
+//			_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(ma1.v0.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(ma1.v0.z)),
+//			_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(ma1.v0.w))
+//		)
+//	);
+//	returnVal1.v1_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(ma1.v1.x)),
+//			_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(ma1.v1.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(ma1.v1.z)),
+//			_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(ma1.v1.w))
+//		)
+//	);
+//	returnVal1.v2_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(ma1.v2.x)),
+//			_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(ma1.v2.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(ma1.v2.z)),
+//			_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(ma1.v2.w))
+//		)
+//	);
+//	returnVal1.v3_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(ma1.v3.x)),
+//			_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(ma1.v3.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(ma1.v3.z)),
+//			_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(ma1.v3.w))
+//		)
+//	);
+//
+//
+//	// returnVal2 = returnVal2*m5
+//	returnVal2.v0_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(returnVal2.v0.x)),
+//			_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(returnVal2.v0.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(returnVal2.v0.z)),
+//			_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(returnVal2.v0.w))
+//		)
+//	);
+//	returnVal2.v1_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(returnVal2.v1.x)),
+//			_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(returnVal2.v1.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(returnVal2.v1.z)),
+//			_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(returnVal2.v1.w))
+//		)
+//	);
+//	returnVal2.v2_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(returnVal2.v2.x)),
+//			_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(returnVal2.v2.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(returnVal2.v2.z)),
+//			_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(returnVal2.v2.w))
+//		)
+//	);
+//	returnVal2.v3_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(returnVal2.v3.x)),
+//			_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(returnVal2.v3.y))
+//		),										
+//		_mm_add_ps(								
+//			_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(returnVal2.v3.z)),
+//			_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(returnVal2.v3.w))
+//		)
+//	);
+//
+//
+//	// returnVal1 = returnVal1*returnVal2
+//	returnVal1.v0_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(returnVal2.v0_m128, _mm_set_ps1(returnVal1.v0.x)),
+//			_mm_mul_ps(returnVal2.v1_m128, _mm_set_ps1(returnVal1.v0.y))
+//		),											   
+//		_mm_add_ps(									   
+//			_mm_mul_ps(returnVal2.v2_m128, _mm_set_ps1(returnVal1.v0.z)),
+//			_mm_mul_ps(returnVal2.v3_m128, _mm_set_ps1(returnVal1.v0.w))
+//		)
+//	);
+//	returnVal1.v1_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(returnVal2.v0_m128, _mm_set_ps1(returnVal1.v1.x)),
+//			_mm_mul_ps(returnVal2.v1_m128, _mm_set_ps1(returnVal1.v1.y))
+//		),											   
+//		_mm_add_ps(									   
+//			_mm_mul_ps(returnVal2.v2_m128, _mm_set_ps1(returnVal1.v1.z)),
+//			_mm_mul_ps(returnVal2.v3_m128, _mm_set_ps1(returnVal1.v1.w))
+//		)
+//	);
+//	returnVal1.v2_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(returnVal2.v0_m128, _mm_set_ps1(returnVal1.v2.x)),
+//			_mm_mul_ps(returnVal2.v1_m128, _mm_set_ps1(returnVal1.v2.y))
+//		),											   
+//		_mm_add_ps(									   
+//			_mm_mul_ps(returnVal2.v2_m128, _mm_set_ps1(returnVal1.v2.z)),
+//			_mm_mul_ps(returnVal2.v3_m128, _mm_set_ps1(returnVal1.v2.w))
+//		)
+//	);
+//	returnVal1.v3_m128 = _mm_add_ps(
+//		_mm_add_ps(
+//			_mm_mul_ps(returnVal2.v0_m128, _mm_set_ps1(returnVal1.v3.x)),
+//			_mm_mul_ps(returnVal2.v1_m128, _mm_set_ps1(returnVal1.v3.y))
+//		),									
+//		_mm_add_ps(									  
+//			_mm_mul_ps(returnVal2.v2_m128, _mm_set_ps1(returnVal1.v3.z)),
+//			_mm_mul_ps(returnVal2.v3_m128, _mm_set_ps1(returnVal1.v3.w))
+//		)
+//	);
+//
+//
+//	// returnVal1 = ma1*ma2*ma3*ma4*ma5
+//	return returnVal1;
+//}
+
+MmulMmulMmulMmulM::operator Matrix()
+{
+	// returnVal1 = m1*m2
+	Matrix ma1ma2(ma1);
+	ma1ma2.v3_m128 = ma2.v3_m128;
+	Matrix returnVal1(ma1ma2);
+
+	// returnVal2 = returnVal1*m3
+	Matrix returnVal2;
+	for (int i = 0; i < 4; i++)
+	{
+		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(ma3.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
+				_mm_mul_ps(ma3.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
+			),
+			_mm_add_ps(
+				_mm_mul_ps(ma3.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
+				_mm_mul_ps(ma3.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
+			)
+		);
+	}
+
+
+	// returnVal1 = returnVal2*m4
+	for (int i = 0; i < 4; i++)
+	{
+		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->x)),
+				_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->y))
+			),
+			_mm_add_ps(
+				_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->z)),
+				_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->w))
+			)
+		);
+	}
+
+
+	// returnVal2 = returnVal1*m4
+	for (int i = 0; i < 4; i++)
+	{
+		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
+				_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
+			),
+			_mm_add_ps(
+				_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
+				_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
+			)
+		);
+	}
+
+
+	// returnVal2 = ma1*ma2*ma3*ma4*ma5
+	return returnVal2;
+}
+
+
 
 
 // --- End of File ---
