@@ -19,7 +19,7 @@ ParticleEmitter::ParticleEmitter()
 	vel_variance(-29.0f * 0.0001f, 0.70f * 0.0001f, -1.0f * 0.001f),
 	pos_variance(-3.50f * 0.0001f, 3.50f * 0.0001f, 5.0f * 0.001f),
 	scale_variance(3.0f),
-	pParticleBlockStart((Particle*)(new unsigned char [NUM_PARTICLES*sizeof(Particle)])),
+	pParticleBlockStart(new Particle[NUM_PARTICLES]),
 	pParticleBlockEnd(pParticleBlockStart + NUM_PARTICLES),
 	headParticle(pParticleBlockStart),
 	tailParticle(headParticle)
@@ -27,7 +27,7 @@ ParticleEmitter::ParticleEmitter()
 
 ParticleEmitter::~ParticleEmitter()
 {
-	delete pParticleBlockStart;
+	delete[] pParticleBlockStart;
 }
 
 void ParticleEmitter::SpawnParticle()
@@ -160,10 +160,12 @@ void ParticleEmitter::draw() const
 				_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, p->position.z) // second arg is NA
 			);
 
-		tmp.v0_m128 = _mm_mul_ps(_mm_mul_ps(tmp.v0_m128, p->scaleVect._m), _mm_set1_ps(p->scaleVect.x));
-		tmp.v1_m128 = _mm_mul_ps(_mm_mul_ps(tmp.v1_m128, p->scaleVect._m), _mm_set1_ps(p->scaleVect.y));
-		tmp.v2.z = p->scaleVect.z * p->scaleVect.z;
-		tmp.v3_m128 = _mm_mul_ps(tmp.v3_m128, p->scaleVect._m);
+		m128Tmp = _mm_set1_ps(p->scaleVal * p->scaleVal);
+		
+		tmp.v0_m128 = _mm_mul_ps(tmp.v0_m128, m128Tmp);
+		tmp.v1_m128 = _mm_mul_ps(tmp.v1_m128, m128Tmp);
+		tmp.v2.z = m128Tmp.m128_f32[0];
+		tmp.v3_m128 = _mm_mul_ps(tmp.v3_m128, _mm_set1_ps(p->scaleVal));
 		///////////////////////////////////////////////////////////////////////////////
 
 		// use currrent matrix

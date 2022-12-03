@@ -15,7 +15,7 @@ class Particle : public Align16
 public:
 	friend class ParticleEmitter;
 	
-	Particle() = delete;	
+	Particle() = default;	
 	~Particle();
 	Particle(const Particle& srcParticle) = default;
 	Particle& operator=(const Particle&) = delete;
@@ -30,7 +30,7 @@ private:
 
 	float	life;
 	float	rotation;
-	Vect4D	scaleVect;
+	float	scaleVal;
 	uint32_t pad1;
 
 	const static Vect4D Z_AXIS;

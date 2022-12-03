@@ -114,14 +114,14 @@ Particle::Particle(const ParticleEmitter* const pParticleEmitter)
 
 	if (sign == 0)
 	{
-		tmpVect *= (var * (1.20f * 0.001f * -3.0f));
+		var *= (1.20f * 0.001f * -3.0f);
 	}
 	else
 	{
-		tmpVect *= (var * (1.20f * 0.001f));
+		var *= (1.20f * 0.001f);
 	}
 
-	this->scaleVect = tmpVect;
+	this->scaleVal = -var;
 }
 
 Particle::~Particle()
