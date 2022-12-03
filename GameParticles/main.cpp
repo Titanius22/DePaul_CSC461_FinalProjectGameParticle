@@ -29,7 +29,7 @@ int main()
 	// IDENT_MATRIX is the camera matrix;
 
 	// setup the translation matrix
-	Matrix transMatrix;
+	Matrix transMatrix(Matrix::IDENTITY_MATRIX);
 	Vect4D trans(0.0f, 3.0f, 3.0f);
 	transMatrix.setTransMatrix(&trans);
 

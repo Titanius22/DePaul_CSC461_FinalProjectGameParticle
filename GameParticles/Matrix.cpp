@@ -73,25 +73,28 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	//	{	0		0		1		0	}
 	//	{	x		y		z		1	}
 	
-	this->m0 = 1.0f;
-	this->m1 = 0.0f;
-	this->m2 = 0.0f;
-	this->m3 = 0.0f;
+	// doing asserts because all elements except 
+	// m12, m13, m14 should be set to identity_matrix values
 
-	this->m4 = 0.0f;
-	this->m5 = 1.0f;
-	this->m6 = 0.0f;
-	this->m7 = 0.0f;
+	assert(this->m0 == 1.0f);
+	assert(this->m1 == 0.0f);
+	assert(this->m2 == 0.0f);
+	assert(this->m3 == 0.0f);
 
-	this->m8 = 0.0f;
-	this->m9 = 0.0f;
-	this->m10 = 1.0f;
-	this->m11 = 0.0f;
+	assert(this->m4 == 0.0f);
+	assert(this->m5 == 1.0f);
+	assert(this->m6 == 0.0f);
+	assert(this->m7 == 0.0f);
+
+	assert(this->m8 == 0.0f);
+	assert(this->m9 == 0.0f);
+	assert(this->m10 == 1.0f);
+	assert(this->m11 == 0.0f);
 	
 	this->m12 = t->x;
 	this->m13 = t->y;
 	this->m14 = t->z;
-	this->m15 = 1.0f;
+	assert(this->m15 == 1.0f);
 }
 
 // only runs once, don't care to optimize
@@ -309,25 +312,28 @@ void Matrix::setRotZMatrix(const float az)
 	//	{	0		0		1		0	}
 	//	{	0		0		0		1	}
 	
+	// doing asserts because all elements except 
+	// m0, m1, m4, m5 should be set to identity_matrix values
+	
 	this->m0 = cos(az);
 	this->m1 = -sin(az);
-	this->m2 = 0;
-	this->m3 = 0;
-	
+	assert(this->m2 == 0);
+	assert(this->m3 == 0);
+
 	this->m4 = sin(az);
 	this->m5 = cos(az);
-	this->m6 = 0;
-	this->m7 = 0;
-	
-	this->m8 = 0;
-	this->m9 = 0;
-	this->m10 = 1;
-	this->m11 = 0;
-	
-	this->m12 = 0;
-	this->m13 = 0;
-	this->m14 = 0;
-	this->m15 = 1;
+	assert(this->m6 == 0);
+	assert(this->m7 == 0);
+
+	assert(this->m8 == 0);
+	assert(this->m9 == 0);
+	assert(this->m10 == 1);
+	assert(this->m11 == 0);
+
+	assert(this->m12 == 0);
+	assert(this->m13 == 0);
+	assert(this->m14 == 0);
+	assert(this->m15 == 1);
 }
 
 void Matrix::setScaleMatrix(const Vect4D *scale)
