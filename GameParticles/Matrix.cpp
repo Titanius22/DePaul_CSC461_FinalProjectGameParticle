@@ -25,6 +25,15 @@ Matrix::Matrix(
 	  m12(_m12), m13(_m13), m14(_m14), m15(_m15)
 {}
 
+Matrix::Matrix(const __m128 _v0, const __m128 _v1, const __m128 _v2, const __m128 _v3)
+	: v0_m128(_v0), v1_m128(_v1), v2_m128(_v2), v3_m128(_v3)
+{}
+
+Matrix::Matrix(const Vect4D _v0, const Vect4D _v1, const Vect4D _v2, const Vect4D _v3)
+	: v0(_v0), v1(_v1), v2(_v2), v3(_v3)
+{}
+
+
 Matrix::~Matrix()
 {
 	// do nothing
@@ -213,6 +222,16 @@ Matrix Matrix::operator*(const Matrix& rhs) const
 	tmp.m15 = (m12*rhs.m3) + (m13*rhs.m7) + (m14 *rhs.m11) + (m15*rhs.m15);
 
 	return tmp;
+}
+
+Matrix Matrix::operator-(const Matrix& rhs) const
+{
+	return Matrix(
+		 m0 - rhs.m0,   m1 - rhs.m1,   m2 - rhs.m2,   m3 - rhs.m3,
+		 m4 - rhs.m4,   m5 - rhs.m5,   m6 - rhs.m6,   m7 - rhs.m7,
+		 m8 - rhs.m8,   m9 - rhs.m9,  m10 - rhs.m10, m11 - rhs.m11,
+		m12 - rhs.m12, m13 - rhs.m13, m14 - rhs.m14, m15 - rhs.m15
+	);
 }
 
 Matrix& Matrix::operator/=(const float rhs)

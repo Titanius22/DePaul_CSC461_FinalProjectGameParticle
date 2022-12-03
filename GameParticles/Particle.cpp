@@ -53,30 +53,24 @@ Particle::~Particle()
 void Particle::Update(const float& time_elapsed)
 {
 	// Rotate the matrices
-	Vect4D tmp_Row0;
-	tmp_Row0 = curr_Row0;
-	prev_Row0 = tmp_Row0;
+	prev_matrix = curr_matrix;
+	//prev_Row0 = curr_Row0;
+	//prev_Row1 = curr_Row1;
+	//prev_Row2 = curr_Row2;
+	//prev_Row3 = curr_Row3;
 
-	Vect4D tmp_Row1;
-	tmp_Row1 = curr_Row1;
-	prev_Row1 = tmp_Row1;
+	//Matrix tmp(
+	//	diff_Row0._m, diff_Row1._m, diff_Row2._m, diff_Row3._m
+	//);
 
-	Vect4D tmp_Row2;
-	tmp_Row2 = curr_Row2;
-	prev_Row2 = tmp_Row2;
+	//Matrix tmp(diff_matrix);
 
-	Vect4D tmp_Row3;
-	tmp_Row3 = curr_Row3;
-	prev_Row3 = tmp_Row3;
+	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_0, &this->diff_Row0);
+	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_1, &this->diff_Row1);
+	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_2, &this->diff_Row2);
+	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_3, &this->diff_Row3);
 
-	Matrix tmp;
-
-	tmp.set(Matrix::MatrixRow::MATRIX_ROW_0, &this->diff_Row0);
-	tmp.set(Matrix::MatrixRow::MATRIX_ROW_1, &this->diff_Row1);
-	tmp.set(Matrix::MatrixRow::MATRIX_ROW_2, &this->diff_Row2);
-	tmp.set(Matrix::MatrixRow::MATRIX_ROW_3, &this->diff_Row3);
-
-	float MatrixScale = -1.3f*tmp.Determinant();
+	float MatrixScale = -1.3f * (diff_matrix.Determinant());
 
 	// serious math below - magic secret sauce
 	life += time_elapsed;

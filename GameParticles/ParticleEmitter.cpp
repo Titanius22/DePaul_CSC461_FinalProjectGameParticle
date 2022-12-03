@@ -42,7 +42,6 @@ ParticleEmitter::~ParticleEmitter()
 
 void ParticleEmitter::SpawnParticle()
 {
-
 	// create AND initialize new particle
 	Particle *newParticle = new Particle(0.0f, start_position, start_velocity, start_scale);
 
@@ -116,7 +115,7 @@ void ParticleEmitter::update()
 		else
 		{
 			// add to buffer
-		drawBuffer.push_back(*p);
+			drawBuffer.push_back(*p);
 		
 			// increment to next point
 			p = p->next;
@@ -129,53 +128,6 @@ void ParticleEmitter::update()
 	// make sure the counts track (asserts go away in release - relax Christos)
 	assert(bufferCount == (last_active_particle+1));
 	last_loop = current_time;
-}
-	   
-void ParticleEmitter::addParticleToList(Particle *p )
-{
-	assert(p);
-	if( this->headParticle == nullptr )
-	{ // first on list
-		this->headParticle = p;
-		p->next = nullptr;
-		p->prev= nullptr;
-	}
-	else 
-	{ // add to front of list
-		headParticle->prev = p;
-		p->next = headParticle;
-		p->prev = nullptr;
-		headParticle = p;
-	}
-
-}
-
-void ParticleEmitter::removeParticleFromList( Particle *p )
-{
-	// make sure we are not screwed with a null pointer
-	assert(p);
-
-	if( p->prev == nullptr && p->next == nullptr  )
-	{ // only one on the list
-		this->headParticle = nullptr;
-	}
-	else if( p->prev == nullptr && p->next != nullptr  )
-	{ // first on the list
-		p->next->prev = nullptr;
-		this->headParticle = p->next;
-	}
-	else if( p->prev!= nullptr && p->next == nullptr )
-	{ // last on the list 
-		p->prev->next = nullptr;
-	}
-	else//( p->next != nullptr  && p->prev !=nullptr )
-	{ // middle of the list
-		p->prev->next = p->next;
-		p->next->prev = p->prev;
-	}
-	
-	// bye bye
-	delete p;
 }
 
 void ParticleEmitter::draw()
@@ -229,27 +181,67 @@ void ParticleEmitter::draw()
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
 
 		// squirrel away matrix for next update
-		tmp.get(Matrix::MatrixRow::MATRIX_ROW_0, &it->curr_Row0 );
-		tmp.get(Matrix::MatrixRow::MATRIX_ROW_1, &it->curr_Row1 );
-		tmp.get(Matrix::MatrixRow::MATRIX_ROW_2, &it->curr_Row2 );
-		tmp.get(Matrix::MatrixRow::MATRIX_ROW_3, &it->curr_Row3 );
+		it->curr_matrix = tmp;
 
 		// difference vector
-		it->diff_Row0 = it->curr_Row0 - it->prev_Row0;
-		it->diff_Row1 = it->curr_Row1 - it->prev_Row1;
-		it->diff_Row2 = it->curr_Row2 - it->prev_Row2;
-		it->diff_Row3 = it->curr_Row3 - it->prev_Row3;
-
+		it->diff_matrix = it->curr_matrix - it->prev_matrix;
 	}
 
-	// delete the buffer
-	for( size_t i = 0; i < drawBuffer.size(); i++ )
-	{
-		drawBuffer.pop_back();
-	}
+	//// delete the buffer
+	//for( size_t i = 0; i < drawBuffer.size(); i++ )
+	//{
+	//	drawBuffer.pop_back();
+	//}
 
 	// done with buffer, clear it.
 	drawBuffer.clear();
+}
+
+void ParticleEmitter::addParticleToList(Particle* p)
+{
+	assert(p);
+	if (this->headParticle == nullptr)
+	{ // first on list
+		this->headParticle = p;
+		p->next = nullptr;
+		p->prev = nullptr;
+	}
+	else
+	{ // add to front of list
+		headParticle->prev = p;
+		p->next = headParticle;
+		p->prev = nullptr;
+		headParticle = p;
+	}
+
+}
+
+void ParticleEmitter::removeParticleFromList(Particle* p)
+{
+	// make sure we are not screwed with a null pointer
+	assert(p);
+
+	if (p->prev == nullptr && p->next == nullptr)
+	{ // only one on the list
+		this->headParticle = nullptr;
+	}
+	else if (p->prev == nullptr && p->next != nullptr)
+	{ // first on the list
+		p->next->prev = nullptr;
+		this->headParticle = p->next;
+	}
+	else if (p->prev != nullptr && p->next == nullptr)
+	{ // last on the list 
+		p->prev->next = nullptr;
+	}
+	else//( p->next != nullptr  && p->prev !=nullptr )
+	{ // middle of the list
+		p->prev->next = p->next;
+		p->next->prev = p->prev;
+	}
+
+	// bye bye
+	delete p;
 }
 
 void ParticleEmitter::Execute(Particle* srcParticle)

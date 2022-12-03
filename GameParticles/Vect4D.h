@@ -17,6 +17,7 @@ class Vect4D
 public:
 	friend class Matrix;
 	friend class ParticleEmitter;
+	friend class Particle;
 
 	Vect4D();
 	~Vect4D();

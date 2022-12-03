@@ -7,6 +7,7 @@
 
 // include
 #include "Vect4D.h"
+#include "Matrix.h"
 
 class Particle
 {
@@ -33,20 +34,15 @@ private:
 	Vect4D	scale;
 	float	rotation_velocity;
 
-	Vect4D  diff_Row0;
-	Vect4D  diff_Row1;
-	Vect4D  diff_Row2;
-	Vect4D  diff_Row3;
+	// dead space
+	float	pad0;
+	float	pad1;
+	float	pad2;
 
-	Vect4D	prev_Row0;
-	Vect4D	prev_Row1;
-	Vect4D  prev_Row2;
-	Vect4D  prev_Row3;
-	
-	Vect4D	curr_Row0;
-	Vect4D	curr_Row1;
-	Vect4D  curr_Row2;
-	Vect4D  curr_Row3;
+	// matrices to hold data
+	Matrix diff_matrix;
+	Matrix prev_matrix;
+	Matrix curr_matrix;
 
 	const static Vect4D Z_AXIS;
 };

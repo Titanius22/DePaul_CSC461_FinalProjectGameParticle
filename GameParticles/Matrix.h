@@ -13,6 +13,9 @@
 class Matrix
 {
 public:
+	friend class Vect4D;
+	friend class ParticleEmitter;
+	friend class Particle;
 
 	// local enumerations
 	enum class MatrixRow
@@ -35,6 +38,14 @@ public:
 		const float _m12, const float _m13, const float _m14, const float _m15
 	);
 
+	Matrix(
+		const __m128 _v0, const __m128 _v1, const __m128 _v2, const __m128 _v3
+	);
+
+	Matrix(
+		const Vect4D _v0, const Vect4D _v1, const Vect4D _v2, const Vect4D _v3
+	);
+
 	void set(const MatrixRow row, Vect4D *t );
 	void get(const MatrixRow row, Vect4D *vOut );
 
@@ -46,6 +57,7 @@ public:
 	
 	Matrix operator*(const Matrix &t ) const;
 	Matrix operator*(const float s );
+	Matrix operator-(const Matrix& t) const;
 
 	float Determinant();
 	
@@ -63,6 +75,14 @@ private:
 			Vect4D v1;
 			Vect4D v2;
 			Vect4D v3;
+		};
+
+		struct
+		{
+			__m128 v0_m128;
+			__m128 v1_m128;
+			__m128 v2_m128;
+			__m128 v3_m128;
 		};
 
 		struct
