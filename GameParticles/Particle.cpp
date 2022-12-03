@@ -3,7 +3,6 @@
 //---------------------------------------------------------------
 
 #include "Particle.h"
-#include "Matrix.h"
 
 const Vect4D Particle::Z_AXIS(0.0f, 0.0f, -5.0f);
 const float Particle::ROTATION_VELOCITY(0.15f);
@@ -29,6 +28,119 @@ Particle::Particle(const Vect4D& _position, const Vect4D& _velocity, const Vect4
 	velocity(_velocity),
 	scale(_scale)
 {}
+
+Particle::Particle(const ParticleEmitter* const pParticleEmitter)
+	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
+	position(pParticleEmitter->start_position),
+	velocity(pParticleEmitter->start_velocity),
+	scale(pParticleEmitter->start_scale)
+{
+	// x - variance
+	float var = static_cast<float>(rand() % 1000);
+	int sign = rand() % 2;
+	float t_var = pParticleEmitter->pos_variance.x;
+	if (sign == 0)
+	{
+		// negative var
+		this->position.x -= t_var * var;
+	}
+	else
+	{
+		// positive var
+		this->position.x += t_var * var;
+	}
+
+	// y - variance
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pParticleEmitter->pos_variance.y;
+	if (sign == 0)
+	{
+		// negative var
+		this->position.y -= t_var * var;
+	}
+	else
+	{
+		// positive var
+		this->position.y += t_var * var;
+	}
+
+	// z - variance
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pParticleEmitter->pos_variance.z;
+	if (sign == 0)
+	{
+		// negative var
+		this->position.z -= t_var * var;
+	}
+	else
+	{
+		// positive var
+		this->position.z += t_var * var;
+	}
+
+
+
+	// x  - add velocity
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pParticleEmitter->vel_variance.x;
+	if (sign == 0)
+	{
+		// negative var
+		this->velocity.x -= t_var * var;
+	}
+	else
+	{
+		// positive var
+		this->velocity.x += t_var * var;
+	}
+
+	// y - add velocity
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+	t_var = pParticleEmitter->vel_variance.y;
+	if (sign == 0)
+	{
+		// negative var
+		this->velocity.y -= var * (t_var * 3.0f);
+	}
+	else
+	{
+		// positive var
+		this->velocity.y += t_var * var;
+	}
+
+	// z - add velocity
+	var = static_cast<float>(rand() % 1000);
+	sign = static_cast<int>(rand() % 2);
+	t_var = pParticleEmitter->vel_variance.z;
+	if (sign == 0)
+	{
+		// negative var
+		this->velocity.z -= var * (t_var * 3.0f);
+	}
+	else
+	{
+		// positive var
+		this->velocity.z += t_var * var;
+	}
+
+
+	// correct the sign
+	var = static_cast<float>(rand() % 1000);
+	sign = rand() % 2;
+
+	if (sign == 0)
+	{
+		this->scale *= (var * (1.20f * 0.001f * -3.0f));
+	}
+	else
+	{
+		this->scale *= (var * (1.20f * 0.001f));
+	}
+}
 
 Particle::~Particle()
 {

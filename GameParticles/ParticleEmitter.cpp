@@ -15,16 +15,16 @@ ParticleEmitter::ParticleEmitter()
 	spawn_frequency(0.00001f),		
 	last_spawn(globalTimer.GetGlobalTime()),		
 	last_loop(globalTimer.GetGlobalTime()),
-	max_life( MAX_LIFE ),
-	max_particles( NUM_PARTICLES ),
 	last_active_particle(-1),
-	bufferCount(0),
 	headParticle(nullptr),
 	vel_variance(-29.0f * 0.0001f, 0.70f * 0.0001f, -1.0f * 0.001f),
 	pos_variance(-3.50f * 0.0001f, 3.50f * 0.0001f, 5.0f * 0.001f),
 	scale_variance(3.0f)
 {
-	// nothing to do
+	//assert(false);
+	//std::cout << "Update this for sequencial memory";
+	//headParticle = (Particle*)(new unsigned char [NUM_PARTICLES*sizeof(Particle)]);
+
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -42,10 +42,7 @@ ParticleEmitter::~ParticleEmitter()
 void ParticleEmitter::SpawnParticle()
 {
 	// create AND initialize new particle
-	Particle *newParticle = new Particle(start_position, start_velocity, start_scale);
-
-	// apply the variance
-	this->Execute(newParticle);
+	Particle *newParticle = new Particle(this);
 
 	// increment count
 	last_active_particle++;
@@ -63,10 +60,10 @@ void ParticleEmitter::update()
 	float time_elapsed = current_time - last_spawn;
 	
 	// check if particles need to get added.....
-	if (last_active_particle < max_particles - 1)
+	if (last_active_particle < NUM_PARTICLES - 1)
 	{
 		// add particles while while there are more to add
-		while ((spawn_frequency < time_elapsed) && (last_active_particle < max_particles - 1))
+		while ((spawn_frequency < time_elapsed) && (last_active_particle < (NUM_PARTICLES - 1)))
 		{
 			// spawn a particle
 			this->SpawnParticle();
@@ -94,9 +91,28 @@ void ParticleEmitter::update()
 		// if life is greater that the max_life 
 		// and there is some left on the list
 		// remove node
-		if((last_active_particle > 0) && (p->life > max_life))
+		if((last_active_particle > 0) && (p->life > MAX_LIFE))
 		{
 			pParticleToDelete = p;
+
+			/////////////////////////////////////////
+			Particle* plot = this->headParticle;
+			float oldest = plot->life;
+			float youngest = plot->life;
+			while (plot != nullptr)
+			{
+				if (plot->life > oldest)
+				{
+					oldest = plot->life;
+				}
+				if (plot->life < youngest)
+				{
+					youngest = plot->life;
+				}
+
+				plot = plot->next;
+			}
+			////////////////////////////////////////
 			
 			// increment to next point
 			p = p->next;
@@ -121,13 +137,6 @@ void ParticleEmitter::update()
 
 void ParticleEmitter::draw() const
 {
-	// get the position from this matrix
-	//Vect4D camPosVect(INVERSE_TRANS_CAMERA_MATRIX.v3_m128);
-
-	//// camera position
-	//Matrix transCamera;
-	//transCamera.setTransMatrix( &camPosVect );
-
 	Matrix tmp;
 
 	// iterate throught the list of particles
@@ -211,118 +220,6 @@ void ParticleEmitter::removeParticleFromList(Particle* p)
 
 	// bye bye
 	delete p;
-}
-
-void ParticleEmitter::Execute(Particle* srcParticle) const
-{
-	// Ses it's ugly - I didn't write this so don't bitch at me
-	// Sometimes code like this is inside real commerical code ( so know you now how it feels )
-	
-	// x - variance
-	float var = static_cast<float>(rand() % 1000);
-	int sign = rand() % 2;
-	float t_var = pos_variance.x;
-	if(sign == 0)
-	{
-		// negative var
-		srcParticle->position.x -= t_var * var;
-	}
-	else
-	{
-		// positive var
-		srcParticle->position.x += t_var * var;
-	}
-
-	// y - variance
-	var = static_cast<float>(rand() % 1000);
-	sign = rand() % 2;
-	t_var = pos_variance.y;
-	if(sign == 0)
-	{
-		// negative var
-		srcParticle->position.y -= t_var * var;
-	}
-	else
-	{
-		// positive var
-		srcParticle->position.y += t_var * var;
-	}
-	
-	// z - variance
-	var = static_cast<float>(rand() % 1000);
-	sign = rand() % 2;
-	t_var = pos_variance.z;
-	if (sign == 0)
-	{
-		// negative var
-		srcParticle->position.z -= t_var * var;
-	}
-	else
-	{
-		// positive var
-		srcParticle->position.z += t_var * var;
-	}
-
-
-
-	// x  - add velocity
-	var = static_cast<float>(rand() % 1000);
-	sign = rand() % 2;
-	t_var = vel_variance.x;
-	if (sign == 0)
-	{
-		// negative var
-		srcParticle->velocity.x -= t_var * var;
-	}
-	else
-	{
-		// positive var
-		srcParticle->velocity.x += t_var * var;
-	}
-	
-	// y - add velocity
-	var = static_cast<float>(rand() % 1000);
-	sign = rand() % 2;
-	t_var = vel_variance.y;
-	if (sign == 0)
-	{
-		// negative var
-		srcParticle->velocity.y -= var * (t_var * 3.0f);
-	}
-	else
-	{
-		// positive var
-		srcParticle->velocity.y += t_var * var;
-	}
-	
-	// z - add velocity
-	var = static_cast<float>(rand() % 1000);
-	sign = static_cast<int>(rand() % 2);
-	t_var = vel_variance.z;
-	if (sign == 0)
-	{
-		// negative var
-		srcParticle->velocity.z -= var * (t_var * 3.0f);
-	}
-	else
-	{
-		// positive var
-		srcParticle->velocity.z += t_var * var;
-	}
-	
-
-	// correct the sign
-	var =  static_cast<float>(rand() % 1000);
-	sign = rand() % 2;
-	
-	if(sign == 0)
-	{
-		srcParticle->scale *= (var * (1.20f * 0.001f * -3.0f));
-	}
-	else
-	{
-		srcParticle->scale *= (var * (1.20f * 0.001f));
-	}
 }
 
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(

@@ -8,6 +8,7 @@
 // include
 #include "Vect4D.h"
 #include "Matrix.h"
+#include "ParticleEmitter.h"
 
 class Particle
 {
@@ -20,6 +21,7 @@ public:
 	Particle& operator=(const Particle&) = delete;
 
 	Particle(const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
+	Particle(const ParticleEmitter* const pParticleEmitter);
 
 	void Update(const float time_elapsed);
 

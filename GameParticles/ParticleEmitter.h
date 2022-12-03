@@ -14,6 +14,8 @@
 class ParticleEmitter
 {
 public:
+	friend class Particle;
+
 	ParticleEmitter();
 	~ParticleEmitter();
 	ParticleEmitter(const ParticleEmitter&) = delete;
@@ -25,8 +27,6 @@ public:
 
 	void addParticleToList(Particle *p );
 	void removeParticleFromList( Particle *p );
-
-	void Execute(Particle* srcParticle) const;
 
 	const static Matrix TRANS_CAMERA_MATRIX;
 	const static Matrix INVERSE_TRANS_CAMERA_MATRIX;
@@ -40,16 +40,15 @@ private:
 	const float	spawn_frequency;
 	float	last_spawn;
 	float	last_loop;	
-	const float	max_life;
-	const int		max_particles;
 	int		last_active_particle;
 
 	// added for speed efficiency
-	int bufferCount;
 	Particle *headParticle;
+
 	const Vect4D	vel_variance;
 	const Vect4D	pos_variance;
-	float	scale_variance;
+	const float	scale_variance;
+	std::list<Particle> particleList;
 };
 
 #endif 
