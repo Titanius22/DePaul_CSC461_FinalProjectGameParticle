@@ -10,7 +10,7 @@
 #include "Matrix.h"
 #include "ParticleEmitter.h"
 
-class Particle
+class Particle : public Align16
 {
 public:
 	friend class ParticleEmitter;

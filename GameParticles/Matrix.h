@@ -10,7 +10,7 @@
 #include "Vect4D.h"
 
 // class
-class Matrix
+class Matrix : public Align16
 {
 public:
 	friend class Vect4D;
@@ -50,6 +50,7 @@ public:
 	static Matrix getTransMatrix(const Vect4D t);
 	void setScaleMatrix(const Vect4D* const s );
 	void setRotZMatrix(const float Z_Radians );
+	void setIdentityMatrix();
 	
 	//Matrix operator*(const Matrix &t ) const;
 	Matrix operator-(const Matrix& t) const;
@@ -61,6 +62,7 @@ public:
 	
 	static Matrix Inverse(const Matrix in);
 	
+	const static Matrix IDENTITY_MATRIX;
 	union
 	{
 		struct
@@ -115,6 +117,7 @@ private:
 };
 
 
+// proxy stuff
 struct MmulM
 {
 	const Matrix& ma1;

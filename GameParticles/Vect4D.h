@@ -12,7 +12,7 @@
 class Matrix;
 
 // class
-class Vect4D
+class Vect4D : public Align16
 {
 public:
 	friend class Matrix;

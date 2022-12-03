@@ -27,14 +27,6 @@ ParticleEmitter::ParticleEmitter()
 
 ParticleEmitter::~ParticleEmitter()
 {
-	/*Particle* pTmp = this->headParticle;
-	Particle* pDeleteMe;
-	while (pTmp != nullptr)
-	{
-		pDeleteMe = pTmp;
-		pTmp = pTmp->next;
-		delete pDeleteMe;
-	}*/
 	delete pParticleBlockStart;
 }
 
@@ -49,7 +41,7 @@ void ParticleEmitter::SpawnParticle()
 	AZUL_PLACEMENT_NEW_BEGIN // < ---- - Add 1 / 3 --------------
 	#undef new //<----- Add 2/3 --------------
 	
-							 // create AND initialize new particle
+	// create AND initialize new particle
 	new(tailParticle) Particle(this);
 
 	AZUL_PLACEMENT_NEW_END //< ---- - Add 3 / 3 --------------
@@ -58,9 +50,6 @@ void ParticleEmitter::SpawnParticle()
 
 	// increment count
 	last_active_particle++;
-
-	// add to list
-	//this->addParticleToList( newParticle );
 }
 
 void ParticleEmitter::update()
@@ -107,7 +96,7 @@ void ParticleEmitter::update()
 		// if life is greater that the max_life 
 		// and there is some left on the list
 		// remove node
-		if((last_active_particle > 0) && (p->life > MAX_LIFE))
+		if((p->life > MAX_LIFE) && (last_active_particle > 0))
 		{
 			assert(p == headParticle);
 
@@ -116,9 +105,6 @@ void ParticleEmitter::update()
 			{
 				headParticle = pParticleBlockStart;
 			}
-			
-			// remove prev node
-			//this->removeParticleFromList(pParticleToDelete);
 
 			// update the number of particles
 			last_active_particle--;
@@ -138,14 +124,10 @@ void ParticleEmitter::draw() const
 	Matrix tmp;
 
 	// particle position
-	Matrix transParticle;
+	Matrix transParticle(Matrix::IDENTITY_MATRIX);
 
 	// rotation matrix
-	Matrix rotParticle;
-
-	// pivot Point
-	Vect4D pivotVect(-20.0f, 0.0f, 200.0f);
-	Matrix pivotParticle;
+	Matrix rotParticle(Matrix::IDENTITY_MATRIX);
 
 	// iterate throught the list of particles
 	Particle* p = headParticle;
@@ -165,10 +147,6 @@ void ParticleEmitter::draw() const
 
 		// rotation matrix
 		rotParticle.setRotZMatrix(p->rotation);
-
-		// pivot Point
-		pivotVect *= p->life;
-		pivotParticle.setTransMatrix( &pivotVect );
 		
 		// total transformation of particle
 		tmp = p->scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * p->scaleMatrix;
