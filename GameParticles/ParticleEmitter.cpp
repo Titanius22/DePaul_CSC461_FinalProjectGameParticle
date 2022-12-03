@@ -208,10 +208,9 @@ void ParticleEmitter::draw()
 		rotParticle.setRotZMatrix( it->rotation );
 
 		// pivot Point
+		Vect4D pivotVect(-20.0f, 0.0f, 200.0f);
+		pivotVect *= it->life;
 		Matrix pivotParticle;
-		Vect4D pivotVect;
-		pivotVect.set(1.0f, 0.0f, -10.0f);
-		pivotVect = pivotVect * -20.0f * it->life;
 		pivotParticle.setTransMatrix( &pivotVect );
 
 		// scale Matrix
