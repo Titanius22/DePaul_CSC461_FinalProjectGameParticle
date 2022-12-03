@@ -128,7 +128,8 @@ Particle::Particle(const ParticleEmitter* const pParticleEmitter)
 		tmpVect *= (var * (1.20f * 0.001f));
 	}
 
-	this->scaleMatrix.setScaleMatrix(&tmpVect);
+	//this->scaleMatrix.setScaleMatrix(&tmpVect);
+	this->scaleVect = tmpVect;
 }
 
 Particle::~Particle()

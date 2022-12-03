@@ -143,13 +143,14 @@ void ParticleEmitter::draw() const
 		}
 		
 		// particle position
-		transParticle.setTransMatrix(&(p->position));
+		//transParticle.setTransMatrix(&(p->position));
 
 		// rotation matrix
-		rotParticle.setRotZMatrix(p->rotation);
+		//rotParticle.setRotZMatrix(p->rotation);
 		
 		// total transformation of particle
-		tmp = p->scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * p->scaleMatrix;
+		//tmp = p->scaleMatrix * TRANS_INVERSE_TRANS_CAMERA_MATRIX * transParticle * rotParticle * p->scaleMatrix;
+		tmp = superMegaFastMatrixCalculator(p->scaleVect, p->position, p->rotation);
 
 		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
@@ -159,6 +160,41 @@ void ParticleEmitter::draw() const
 
 		assert(p != nullptr);
 	}while (p != tailParticle);
+}
+
+Matrix ParticleEmitter::superMegaFastMatrixCalculator(Vect4D _scaleVec, Vect4D _posVec, float _rotation) const
+{
+	float cosVar = cos(_rotation);
+	float sinVar = sin(_rotation);
+
+	Matrix ma1ma2ma3ma4;
+	ma1ma2ma3ma4.v0_m128 = _mm_set_ps(0.0f, 0.0f, sinVar, cosVar);
+	ma1ma2ma3ma4.v1_m128 = _mm_set_ps(0.0f, 0.0f, cosVar, -sinVar);
+	ma1ma2ma3ma4.v2_m128 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+	ma1ma2ma3ma4.v3_m128 =
+		_mm_hadd_ps(
+			_mm_mul_ps(
+				//_mm_set_ps(ma1ma2.m13, ma1ma2.m12, ma1ma2.m13, ma1ma2.m12),
+				_mm_add_ps(
+					_mm_set_ps(TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m13, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m12),
+					_mm_set_ps(_posVec.y, _posVec.x, _posVec.y, _posVec.x)
+				),
+				_mm_set_ps(cosVar, -sinVar, sinVar, cosVar)
+			),
+			_mm_set_ps(1.0f, 1.0f, TRANS_INVERSE_TRANS_CAMERA_MATRIX.m14, _posVec.z) // second arg is NA
+		);
+
+	ma1ma2ma3ma4.v0_m128 = _mm_mul_ps(ma1ma2ma3ma4.v0_m128, _scaleVec._m);
+	ma1ma2ma3ma4.v1_m128 = _mm_mul_ps(ma1ma2ma3ma4.v1_m128, _scaleVec._m);
+	//ma1ma2ma3ma4.v2.z = _scaleVec.z; this operation was combined below
+	ma1ma2ma3ma4.v3_m128 = _mm_mul_ps(ma1ma2ma3ma4.v3_m128, _scaleVec._m);
+
+	ma1ma2ma3ma4.v0_m128 = _mm_mul_ps(ma1ma2ma3ma4.v0_m128, _mm_set1_ps(_scaleVec.x));
+	ma1ma2ma3ma4.v1_m128 = _mm_mul_ps(ma1ma2ma3ma4.v1_m128, _mm_set1_ps(_scaleVec.y));
+	ma1ma2ma3ma4.v2.z = _scaleVec.z * _scaleVec.z; // combined with above
+	// no need. this would be xxx*1 
+
+	return ma1ma2ma3ma4;
 }
 
 const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(

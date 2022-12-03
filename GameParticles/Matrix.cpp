@@ -714,59 +714,36 @@ MmulMmulMmulMmulM::operator Matrix()
 	// returnVal1 = m1*m2
 	Matrix ma1ma2(ma1);
 	ma1ma2.v3_m128 = ma2.v3_m128;
-	Matrix returnVal1(ma1ma2);
 
-	// returnVal2 = returnVal1*m3
-	Matrix returnVal2;
-	for (int i = 0; i < 4; i++)
-	{
-		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
-			_mm_add_ps(
-				_mm_mul_ps(ma3.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
-				_mm_mul_ps(ma3.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
-			),
-			_mm_add_ps(
-				_mm_mul_ps(ma3.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
-				_mm_mul_ps(ma3.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
-			)
-		);
-	}
+	//Matrix ma1ma2ma3;
+	ma1ma2.v3_m128 = _mm_add_ps(ma1ma2.v3_m128, ma3.v3_m128);
 
+	Matrix ma1ma2ma3ma4;
+	ma1ma2ma3ma4.v0_m128 = _mm_mul_ps(ma4.v0_m128, _mm_set_ps1(ma1ma2.m0));
+	ma1ma2ma3ma4.v1_m128 = _mm_mul_ps(ma4.v1_m128, _mm_set_ps1(ma1ma2.m5));
+	ma1ma2ma3ma4.v2_m128 = ma1ma2.v2_m128;
+	__m128 tmp1 = _mm_set_ps(ma1ma2.m13, ma1ma2.m12, ma1ma2.m13, ma1ma2.m12);
+	ma1ma2ma3ma4.v3_m128 = 
+		_mm_hadd_ps(
+			_mm_mul_ps(
+				tmp1, 
+				_mm_set_ps(ma4.m5, ma4.m1, ma4.m4, ma4.m0)
+			), 
+			tmp1 // second arg is NA
+		); 
+	
+	//ma1ma2ma3ma4.v3.z = ma1ma2.m14;
+	//ma1ma2ma3ma4.v3.w = ma1ma2.m15;
+	ma1ma2ma3ma4.v3_m128.m128_u64[1] = *(uint64_t*)(&(ma1ma2.m14));
 
-	// returnVal1 = returnVal2*m4
-	for (int i = 0; i < 4; i++)
-	{
-		((Vect4D*)&returnVal1 + i)->_m = _mm_add_ps(
-			_mm_add_ps(
-				_mm_mul_ps(ma4.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->x)),
-				_mm_mul_ps(ma4.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->y))
-			),
-			_mm_add_ps(
-				_mm_mul_ps(ma4.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->z)),
-				_mm_mul_ps(ma4.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal2 + i)->w))
-			)
-		);
-	}
-
-
-	// returnVal2 = returnVal1*m4
-	for (int i = 0; i < 4; i++)
-	{
-		((Vect4D*)&returnVal2 + i)->_m = _mm_add_ps(
-			_mm_add_ps(
-				_mm_mul_ps(ma5.v0_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->x)),
-				_mm_mul_ps(ma5.v1_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->y))
-			),
-			_mm_add_ps(
-				_mm_mul_ps(ma5.v2_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->z)),
-				_mm_mul_ps(ma5.v3_m128, _mm_set_ps1(((Vect4D*)&returnVal1 + i)->w))
-			)
-		);
-	}
-
-
-	// returnVal2 = ma1*ma2*ma3*ma4*ma5
-	return returnVal2;
+	// ma1ma2ma3ma4ma5
+	tmp1 = _mm_set_ps(ma5.m15, ma5.m10, ma5.m5, ma5.m0);
+	return Matrix(
+		_mm_mul_ps(ma1ma2ma3ma4.v0_m128, tmp1),
+		_mm_mul_ps(ma1ma2ma3ma4.v1_m128, tmp1),
+		_mm_mul_ps(ma1ma2ma3ma4.v2_m128, tmp1),
+		_mm_mul_ps(ma1ma2ma3ma4.v3_m128, tmp1)
+	);
 }
 
 

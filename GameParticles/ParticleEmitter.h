@@ -24,6 +24,7 @@ public:
 	void SpawnParticle();
 	void update();
 	void draw() const;
+	Matrix superMegaFastMatrixCalculator(Vect4D _scaleVec, Vect4D _posVec, float _rotation) const;
 
 	const static Matrix TRANS_CAMERA_MATRIX;
 	const static Matrix INVERSE_TRANS_CAMERA_MATRIX;

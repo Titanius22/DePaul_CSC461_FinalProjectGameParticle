@@ -31,7 +31,7 @@ private:
 
 	float	life;
 	float	rotation;
-	uint32_t pad0;
+	Vect4D	scaleVect;
 	uint32_t pad1;
 
 	const static Vect4D Z_AXIS;
