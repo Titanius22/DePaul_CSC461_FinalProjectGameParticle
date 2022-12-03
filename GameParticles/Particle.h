@@ -21,8 +21,8 @@ public:
 
 	Particle(const float _life, const Vect4D& _position, const Vect4D& _velocity, const Vect4D& _scale);
 
-	void Update(const float& time_elapsed);
-	//void CopyDataOnly( Particle *p );
+	void Update(const float time_elapsed);
+
 private:
 	Particle *next;
 	Particle *prev;
@@ -38,11 +38,6 @@ private:
 	float	pad0;
 	float	pad1;
 	float	pad2;
-
-	// matrices to hold data
-	Matrix diff_matrix;
-	Matrix prev_matrix;
-	Matrix curr_matrix;
 
 	const static Vect4D Z_AXIS;
 };

@@ -22,8 +22,8 @@ ParticleEmitter::ParticleEmitter()
 	headParticle(nullptr),
 	vel_variance(-29.0f * 0.0001f, 0.70f * 0.0001f, -1.0f * 0.001f),
 	pos_variance(-3.50f * 0.0001f, 3.50f * 0.0001f, 5.0f * 0.001f),
-	scale_variance(3.0f),
-	particle_list(NUM_PARTICLES)
+	scale_variance(3.0f)
+	//,particle_list(NUM_PARTICLES)
 {
 	// nothing to do
 }
@@ -87,10 +87,6 @@ void ParticleEmitter::update()
 	// temp Particle
 	Particle* pTemp;
 
-	// clear the buffer
-	drawBuffer.clear();
-	bufferCount = 0;
-
 	while( p != nullptr )
 	{
 		// call every particle and update its position 
@@ -101,32 +97,24 @@ void ParticleEmitter::update()
 		// remove node
 		if((last_active_particle > 0) && (p->life > max_life))
 		{
-			pTemp = p;
-			
-			// need to squirrel it away.
-			p=p->next;
+			// increment to next point
+			p = p->next;
 
 			// remove prev node
-			this->removeParticleFromList(pTemp);
+			this->removeParticleFromList(p->prev);
 
 			// update the number of particles
 			last_active_particle--;
 		}
 		else
 		{
-			// add to buffer
-			drawBuffer.push_back(*p);
-		
 			// increment to next point
 			p = p->next;
-
-			// track the current count
-			bufferCount++;
 		}
+
 	}
 
 	// make sure the counts track (asserts go away in release - relax Christos)
-	assert(bufferCount == (last_active_particle+1));
 	last_loop = current_time;
 }
 
@@ -140,9 +128,11 @@ void ParticleEmitter::draw()
 	tmp.Inverse(inverseCameraMatrix);
 
 	// iterate throught the list of particles
-	std::list<Particle>::iterator it;
-	for( it = drawBuffer.begin(); it != drawBuffer.end(); ++it)
+	Particle* p = this->headParticle;
+	while(p != nullptr)
 	{
+		assert(p != nullptr);
+		
 		// get the position from this matrix
 		Vect4D camPosVect;
 		inverseCameraMatrix.get( Matrix::MatrixRow::MATRIX_ROW_3, &camPosVect );
@@ -153,48 +143,35 @@ void ParticleEmitter::draw()
 
 		// particle position
 		Matrix transParticle;
-		transParticle.setTransMatrix( &it->position );
+		//transParticle.setTransMatrix( &it->position );
+		transParticle.setTransMatrix(&(p->position));
 
 		// rotation matrix
 		Matrix rotParticle;
-		rotParticle.setRotZMatrix( it->rotation );
+		//rotParticle.setRotZMatrix( it->rotation );
+		rotParticle.setRotZMatrix(p->rotation);
 
 		// pivot Point
 		Vect4D pivotVect(-20.0f, 0.0f, 200.0f);
-		pivotVect *= it->life;
+		pivotVect *= p->life;
 		Matrix pivotParticle;
 		pivotParticle.setTransMatrix( &pivotVect );
 
 		// scale Matrix
 		Matrix scaleMatrix;
-		scaleMatrix.setScaleMatrix( &it->scale );
-
+		scaleMatrix.setScaleMatrix( &(p->scale) );
+		
 		// total transformation of particle
 		tmp = scaleMatrix * transCamera * transParticle * rotParticle * scaleMatrix;
 
-		// ------------------------------------------------
-		//  Set the Transform Matrix and Draws Triangle
-		//  Note: 
-		//       this method is using doubles... 
-		//       there is a float version (hint)
-		// ------------------------------------------------
+		// use currrent matrix
 		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
 
-		// squirrel away matrix for next update
-		it->curr_matrix = tmp;
-
-		// difference vector
-		it->diff_matrix = it->curr_matrix - it->prev_matrix;
+		// interate pointer
+		p = p->next;
 	}
 
-	//// delete the buffer
-	//for( size_t i = 0; i < drawBuffer.size(); i++ )
-	//{
-	//	drawBuffer.pop_back();
-	//}
-
-	// done with buffer, clear it.
-	drawBuffer.clear();
+	assert(p == nullptr);
 }
 
 void ParticleEmitter::addParticleToList(Particle* p)
@@ -213,7 +190,6 @@ void ParticleEmitter::addParticleToList(Particle* p)
 		p->prev = nullptr;
 		headParticle = p;
 	}
-
 }
 
 void ParticleEmitter::removeParticleFromList(Particle* p)

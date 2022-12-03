@@ -41,6 +41,11 @@ Matrix::~Matrix()
 
 void Matrix::setTransMatrix(const Vect4D *t)
 { 
+	//	{	1		0		0		0	}
+	//	{	0		1		0		0	}
+	//	{	0		0		1		0	}
+	//	{	x		y		z		1	}
+	
 	this->m0 = 1.0f;
 	this->m1 = 0.0f;
 	this->m2 = 0.0f;

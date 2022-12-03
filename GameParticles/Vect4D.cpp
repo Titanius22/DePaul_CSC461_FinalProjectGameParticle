@@ -12,7 +12,7 @@ Vect4D::Vect4D(const float tx, const float ty, const float tz, const float tw)
 	: x(tx), y(ty), z(tz), w(tw)
 {}
 
-Vect4D::Vect4D(const __m128 t)
+Vect4D::Vect4D(const __m128& t)
 	: _m(t)
 {}
 
@@ -33,9 +33,17 @@ void Vect4D::norm(Vect4D &v) const
 	}
 }
 
-Vect4D Vect4D::operator + (const Vect4D t) const
+Vect4D Vect4D::operator + (const Vect4D& t) const
 {
 	return Vect4D(this->x + t.x, this->y + t.y, this->z + t.z);
+}
+
+Vect4D& Vect4D::operator += (const Vect4D& t)
+{
+	this->x += t.x;
+	this->y += t.y;
+	this->z += t.z;
+	return *this;
 }
 
 float &Vect4D::operator[](Vect e)
@@ -73,7 +81,7 @@ Vect4D& Vect4D::operator *= (const float scale)
 	return *this;
 }
 
-Vect4D Vect4D::operator - (const Vect4D t) const
+Vect4D Vect4D::operator - (const Vect4D& t) const
 {
 	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z);
 }

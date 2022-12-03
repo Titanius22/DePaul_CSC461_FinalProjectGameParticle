@@ -26,7 +26,7 @@ public:
 	// TODO: trial using _m for operator=
 
 	Vect4D(const float tx, const float ty, const float tz, const float tw = 1.0f);
-	Vect4D(const __m128 t);
+	Vect4D(const __m128& t);
 
 	void Cross(const Vect4D &vin, Vect4D &vout) const;
 	float &operator[](Vect e);
@@ -35,8 +35,9 @@ public:
 
 	Vect4D operator * (const float scale) const;
 	Vect4D& operator *= (float scale);
-	Vect4D operator - (const Vect4D t) const;
-	Vect4D operator + (const Vect4D t) const;
+	Vect4D operator - (const Vect4D& t) const;
+	Vect4D operator + (const Vect4D& t) const;
+	Vect4D& operator += (const Vect4D& t);
 
 private:
 	union

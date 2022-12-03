@@ -49,8 +49,6 @@ private:
 	const Vect4D	vel_variance;
 	const Vect4D	pos_variance;
 	float	scale_variance;
-	std::list<Particle> drawBuffer;
-	std::list<Particle> particle_list;
 };
 
 #endif 

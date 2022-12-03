@@ -29,63 +29,24 @@ Particle::Particle(const float _life, const Vect4D& _position, const Vect4D& _ve
 	velocity(_velocity),
 	scale(_scale),
 	rotation_velocity(0.15f)
-{
-
-}
+{}
 
 Particle::~Particle()
 {
 	// nothing to do
 }
 
-//void Particle::CopyDataOnly( Particle *p )
-//{
-//	// copy the data only
-//	// this way of copying data is more efficient that element by element
-//	this->position = p->position;
-//	this->velocity = p->velocity;
-//	this->scale    = p->scale;
-//	this->rotation = p->rotation;
-//	this->rotation_velocity = p->rotation_velocity;
-//	this->life     = p->life;
-//}
-
-void Particle::Update(const float& time_elapsed)
+void Particle::Update(const float time_elapsed)
 {
-	// Rotate the matrices
-	prev_matrix = curr_matrix;
-	//prev_Row0 = curr_Row0;
-	//prev_Row1 = curr_Row1;
-	//prev_Row2 = curr_Row2;
-	//prev_Row3 = curr_Row3;
-
-	//Matrix tmp(
-	//	diff_Row0._m, diff_Row1._m, diff_Row2._m, diff_Row3._m
-	//);
-
-	//Matrix tmp(diff_matrix);
-
-	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_0, &this->diff_Row0);
-	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_1, &this->diff_Row1);
-	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_2, &this->diff_Row2);
-	//tmp.set(Matrix::MatrixRow::MATRIX_ROW_3, &this->diff_Row3);
-
-	float MatrixScale = -1.3f * (diff_matrix.Determinant());
-
 	// serious math below - magic secret sauce
 	life += time_elapsed;
-	position = position + (velocity * time_elapsed);
+	position += (velocity * time_elapsed);
 	Vect4D v;
 	position.Cross(Z_AXIS, v);
 	v.norm(v);
-	position = position + (v * 0.05f * life);
+	position += (v * 0.05f * life);
 
-	if( MatrixScale > 1.0 )
-	{
-		MatrixScale = 1.0f/MatrixScale;
-	};
-
-	rotation = rotation + MatrixScale + (rotation_velocity * time_elapsed) ;
+	rotation += (rotation_velocity * time_elapsed) ;
 }
 
 // --- End of File ---
