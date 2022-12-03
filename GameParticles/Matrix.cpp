@@ -7,54 +7,15 @@
 #include "Matrix.h"
 
 Matrix::Matrix()
-{	
-	this->m0 = 0.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
-
-	this->m4 = 0.0;
-	this->m5 = 0.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
-
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 0.0;
-	this->m11 = 0.0;
-	
-	this->m12 = 0.0;
-	this->m13 = 0.0;
-	this->m14 = 0.0;
-	this->m15 = 0.0;
-}
-
-Matrix::Matrix(Matrix& t)
-{
-	this->m0 = t.m0;
-	this->m1 = t.m1;
-	this->m2 = t.m2;
-	this->m3 = t.m3;
-
-	this->m4 = t.m4;
-	this->m5 = t.m5;
-	this->m6 = t.m6;
-	this->m7 = t.m7;
-
-	this->m8 = t.m8;
-	this->m9 = t.m9;
-	this->m10 = t.m10;
-	this->m11 = t.m11;
-	
-	this->m12 = t.m12;
-	this->m13 = t.m13;
-	this->m14 = t.m14;
-	this->m15 = t.m15;
-}
+	: m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f),
+	  m4(0.0f), m5(0.0f), m6(0.0f), m7(0.0f),
+	  m8(0.0f), m9(0.0f), m10(0.0f), m11(0.0f),
+	  m12(0.0f), m13(0.0f), m14(0.0f), m15(0.0f)
+{}
 
 Matrix::~Matrix()
 {
-	
+	// do nothing
 }
 
 void Matrix::setIdentMatrix()

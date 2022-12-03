@@ -18,8 +18,16 @@ public:
 	friend class Matrix;
 
 	Vect4D();
-	Vect4D(float tx, float ty, float tz, float tw = 1.0f);
 	~Vect4D();
+	Vect4D(const Vect4D&) = default;
+	Vect4D& operator=(const Vect4D&) = default;
+	// TODO: add _m union
+	// TODO: trial using _m for operator=
+
+	Vect4D(float tx, float ty, float tz, float tw = 1.0f);
+	Vect4D(__m128 t);
+
+
 
 	void Cross(Vect4D &vin, Vect4D &vout);
 	float &operator[](Vect e);
@@ -31,10 +39,21 @@ public:
 	Vect4D operator + (Vect4D t);
 
 private:
-	float x;
-	float y;
-	float z;
-	float w;
+	union
+	{
+		struct
+		{
+			__m128 _m;
+		};
+
+		struct
+		{
+			float x;
+			float y;
+			float z;
+			float w;
+		};
+	};
 };
 
 #endif

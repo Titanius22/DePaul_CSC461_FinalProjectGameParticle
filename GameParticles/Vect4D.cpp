@@ -5,20 +5,16 @@
 #include "Vect4D.h"
 
 Vect4D::Vect4D()
-{
-	this->x = 0.0;
-	this->y = 0.0;
-	this->z = 0.0;
-	this->w = 1.0;
-}
+	: x(0.0f), y(0.0f), z(0.0f), w(1.0f)
+{}
 
 Vect4D::Vect4D(float tx, float ty, float tz, float tw)
-{
-	this->x = tx;
-	this->y = ty;
-	this->z = tz;
-	this->w = tw;
-}
+	: x(tx), y(ty), z(tz), w(tw)
+{}
+
+Vect4D::Vect4D(__m128 t)
+	: _m(t)
+{}
 
 Vect4D::~Vect4D()
 {

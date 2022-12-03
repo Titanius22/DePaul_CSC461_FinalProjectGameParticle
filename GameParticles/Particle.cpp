@@ -6,34 +6,37 @@
 #include "Matrix.h"
 
 Particle::Particle()
-{
-	// construtor
-	this->life = 0.0f;
-	this->position.set( 0.0f, 0.0f,  -6.0f );
-	this->velocity.set( -1.0f, 0.0f,  0.0f );
-	this->scale.set( 1.0f, 1.0f, 1.0f );
-	this->rotation = 0.0f;
-	this->rotation_velocity = 0.15f;
-	this->next = nullptr;
-	this->prev = nullptr;
-}
+	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
+	  position(Vect4D(0.0f, 0.0f, -6.0f)),
+	  velocity(Vect4D(-1.0f, 0.0f, 0.0f)),
+	  scale(Vect4D(1.0f, 1.0f, 1.0f)),
+	  rotation_velocity(0.15f)
+{}
+
+Particle::Particle(const Particle& srcParticle)
+	: next(nullptr), prev(nullptr), life(srcParticle.life), rotation(srcParticle.rotation),
+	position(srcParticle.position),
+	velocity(srcParticle.velocity),
+	scale(srcParticle.scale),
+	rotation_velocity(srcParticle.rotation_velocity)
+{}
 
 Particle::~Particle()
 {
 	// nothing to do
 }
 
-void Particle::CopyDataOnly( Particle *p )
-{
-	// copy the data only
-	// this way of copying data is more efficient that element by element
-	this->position = p->position;
-	this->velocity = p->velocity;
-	this->scale    = p->scale;
-	this->rotation = p->rotation;
-	this->rotation_velocity = p->rotation_velocity;
-	this->life     = p->life;
-}
+//void Particle::CopyDataOnly( Particle *p )
+//{
+//	// copy the data only
+//	// this way of copying data is more efficient that element by element
+//	this->position = p->position;
+//	this->velocity = p->velocity;
+//	this->scale    = p->scale;
+//	this->rotation = p->rotation;
+//	this->rotation_velocity = p->rotation_velocity;
+//	this->life     = p->life;
+//}
 
 void Particle::Update(const float& time_elapsed)
 {

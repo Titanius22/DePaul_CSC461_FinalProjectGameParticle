@@ -9,9 +9,9 @@
 PerformanceTimer globalTimer;
 
 ParticleEmitter::ParticleEmitter()
-:	start_position( -1.0, -4.0, 1.0 ),
-	start_velocity( -2.0, 3.0, -0.10), 
-	spawn_frequency(0.00001),		
+:	start_position( -1.0f, -4.0f, 1.0f),
+	start_velocity( -2.0f, 3.0f, -0.10f), 
+	spawn_frequency(0.00001f),		
 	last_spawn(globalTimer.GetGlobalTime()),		
 	last_loop(globalTimer.GetGlobalTime()),
 	max_life( MAX_LIFE ),
@@ -19,9 +19,9 @@ ParticleEmitter::ParticleEmitter()
 	last_active_particle(-1),
 	bufferCount(0),
 	headParticle(nullptr),
-	vel_variance(-29.0, 0.70, -1.0),
-	pos_variance(-3.50, 3.50, 5.0),
-	scale_variance(3.0),
+	vel_variance(-29.0f, 0.70f, -1.0f),
+	pos_variance(-3.50f, 3.50f, 5.0f),
+	scale_variance(3.0f),
 	particle_list(NUM_PARTICLES)
 {
 	// nothing to do
@@ -52,7 +52,7 @@ void ParticleEmitter::SpawnParticle()
 		newParticle->life     = 0.0f;
 		newParticle->position = start_position;
 		newParticle->velocity = start_velocity;
-		newParticle->scale    = Vect4D(-1.0, -1.0, -1.0, 1.0);
+		newParticle->scale    = Vect4D(-1.0f, -1.0f, -1.0f, 1.0f);
 
 		// apply the variance
 		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
@@ -234,8 +234,8 @@ void ParticleEmitter::draw()
 		// pivot Point
 		Matrix pivotParticle;
 		Vect4D pivotVect;
-		pivotVect.set(1.0, 0.0, -10.0);
-		pivotVect = pivotVect * -20.0 * it->life;
+		pivotVect.set(1.0f, 0.0f, -10.0f);
+		pivotVect = pivotVect * -20.0f * it->life;
 		pivotParticle.setTransMatrix( &pivotVect );
 
 		// scale Matrix
@@ -289,7 +289,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	float *t_var = &pos_variance[Vect::X];
 	if(sign == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 
@@ -300,7 +300,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	t_var++;
 	if(sign == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
@@ -311,7 +311,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	t_var++;
 	if(sign == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
@@ -323,7 +323,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	t_var = &vel_variance[Vect::X];
 	if(sign == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
@@ -334,7 +334,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	t_var++;
 	if(sign == 0)
 	{
-		var *= -3.0;
+		var *= -3.0f;
 	}
 	*t_pos += *t_var * var;
 	
@@ -345,7 +345,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	t_var++;
 	if(sign == 0)
 	{
-		var *= -3.0;
+		var *= -3.0f;
 	}
 	*t_pos += *t_var * var;
 	
@@ -355,7 +355,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	
 	if(sign == 0)
 	{
-		var *= -3.0;
+		var *= -3.0f;
 	}
 	sc = sc * var;
 }

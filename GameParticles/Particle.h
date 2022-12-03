@@ -15,27 +15,32 @@ public:
 	
 	Particle();	
 	~Particle();
+	Particle(const Particle& srcParticle);
+	Particle& operator=(const Particle&) = delete;
+
+
 	void Update(const float& time_elapsed);
-	void CopyDataOnly( Particle *p );
+	//void CopyDataOnly( Particle *p );
 private:
 	Particle *next;
 	Particle *prev;
+
+	float	life;
+	float	rotation;
+	Vect4D	position;
+	Vect4D	velocity;
+	Vect4D	scale;
+	float	rotation_velocity;
+
+	Vect4D  diff_Row0;
+	Vect4D  diff_Row1;
+	Vect4D  diff_Row2;
+	Vect4D  diff_Row3;
 
 	Vect4D	prev_Row0;
 	Vect4D	prev_Row1;
 	Vect4D  prev_Row2;
 	Vect4D  prev_Row3;
-
-	Vect4D	position;
-	float	life;
-	Vect4D	velocity;
-	Vect4D	scale;
-	float	rotation;
-	Vect4D  diff_Row0;
-	Vect4D  diff_Row1;
-	Vect4D  diff_Row2;
-	Vect4D  diff_Row3;
-	float	rotation_velocity;
 	
 	Vect4D	curr_Row0;
 	Vect4D	curr_Row1;

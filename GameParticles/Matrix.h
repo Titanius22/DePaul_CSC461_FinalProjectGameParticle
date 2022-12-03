@@ -7,9 +7,7 @@
 
 // includes
 #include "Enum.h"
-
-// forward declare
-class Vect4D;
+#include "Vect4D.h"
 
 // class
 class Matrix
@@ -26,8 +24,9 @@ public:
 	};
 
 	Matrix();	
-	Matrix( Matrix& t );	
 	~Matrix();
+	Matrix(const Matrix& t) = default;
+	Matrix& operator=(const Matrix&) = default;
 
 	void set( MatrixRow row, Vect4D *t );
 	void get( MatrixRow row, Vect4D *vOut );
@@ -50,29 +49,43 @@ public:
 	void Inverse( Matrix &out );
 	
 private:
-	// ROW 0
-	float m0;
-	float m1;
-	float m2;
-	float m3;
+	union
+	{
+		struct
+		{
+			Vect4D v0;
+			Vect4D v1;
+			Vect4D v2;
+			Vect4D v3;
+		};
 
-	// ROW 1
-	float m4;
-	float m5;
-	float m6;
-	float m7;
+		struct
+		{
+			// ROW 0
+			float m0;
+			float m1;
+			float m2;
+			float m3;
 
-	// ROW 2
-	float m8;
-	float m9;
-	float m10;
-	float m11;
+			// ROW 1
+			float m4;
+			float m5;
+			float m6;
+			float m7;
 
-	// ROW 3
-	float m12;
-	float m13;
-	float m14;
-	float m15;
+			// ROW 2
+			float m8;
+			float m9;
+			float m10;
+			float m11;
+
+			// ROW 3
+			float m12;
+			float m13;
+			float m14;
+			float m15;
+		};
+	};
 };
 
 #endif  
