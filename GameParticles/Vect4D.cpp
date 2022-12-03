@@ -8,11 +8,11 @@ Vect4D::Vect4D()
 	: x(0.0f), y(0.0f), z(0.0f), w(1.0f)
 {}
 
-Vect4D::Vect4D(float tx, float ty, float tz, float tw)
+Vect4D::Vect4D(const float tx, const float ty, const float tz, const float tw)
 	: x(tx), y(ty), z(tz), w(tw)
 {}
 
-Vect4D::Vect4D(__m128 t)
+Vect4D::Vect4D(const __m128 t)
 	: _m(t)
 {}
 
@@ -21,7 +21,7 @@ Vect4D::~Vect4D()
 	// nothing to delete
 }
 
-void Vect4D::norm(Vect4D &v)
+void Vect4D::norm(Vect4D &v) const
 {
 	float mag = sqrtf((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
 
@@ -33,7 +33,7 @@ void Vect4D::norm(Vect4D &v)
 	}
 }
 
-Vect4D Vect4D::operator + (Vect4D t)
+Vect4D Vect4D::operator + (const Vect4D t) const
 {
 	return Vect4D(this->x + t.x, this->y + t.y, this->z + t.z);
 }
@@ -60,7 +60,7 @@ float &Vect4D::operator[](Vect e)
 	}
 }
 
-Vect4D Vect4D::operator *(const float scale)
+Vect4D Vect4D::operator *(const float scale) const
 {
 	return Vect4D(this->x * scale, this->y * scale, this->z * scale);
 }
@@ -73,19 +73,19 @@ Vect4D& Vect4D::operator *= (const float scale)
 	return *this;
 }
 
-Vect4D Vect4D::operator - (Vect4D t)
+Vect4D Vect4D::operator - (const Vect4D t) const
 {
 	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z);
 }
 
-void Vect4D::Cross(Vect4D &vin, Vect4D &vout)
+void Vect4D::Cross(const Vect4D &vin, Vect4D &vout) const
 {
 	vout.x = (y * vin.z) - (z * vin.y);
 	vout.y = (z * vin.x) - (x * vin.z);
 	vout.z = (x * vin.y) - (y * vin.x);
 }
 
-void Vect4D::set(float tx, float ty, float tz, float tw)
+void Vect4D::set(const float tx, const float ty, const float tz, const float tw)
 {
 	this->x = tx;
 	this->y = ty;

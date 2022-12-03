@@ -28,6 +28,9 @@ public:
 
 	void Execute(Particle* srcParticle);
 
+	const static Matrix IDENT_MATRIX;
+	const static Matrix TRANS_CAMERA_MATRIX;
+
 private:
 	const Vect4D	start_position;
 	const Vect4D	start_velocity;
@@ -48,7 +51,6 @@ private:
 	float	scale_variance;
 	std::list<Particle> drawBuffer;
 	std::list<Particle> particle_list;
-
 };
 
 #endif 

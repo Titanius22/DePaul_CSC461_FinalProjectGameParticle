@@ -180,18 +180,8 @@ void ParticleEmitter::removeParticleFromList( Particle *p )
 
 void ParticleEmitter::draw()
 {
-	// initialize the camera matrix
-	Matrix cameraMatrix;
-	cameraMatrix.setIdentMatrix();
-
-	// setup the translation matrix
-	Matrix transMatrix;
-	Vect4D trans(0.0f, 5.0f, 40.0f);
-	transMatrix.setTransMatrix(&trans);
-
-	Matrix tmp;
-	// multiply them together
-	tmp = cameraMatrix * transMatrix;
+	// get the trans of the camera matrix
+	Matrix tmp(IDENT_MATRIX * TRANS_CAMERA_MATRIX);
 
 	// get the inverse matrix
 	Matrix inverseCameraMatrix;
@@ -373,8 +363,20 @@ void ParticleEmitter::Execute(Particle* srcParticle)
 	{
 		srcParticle->scale *= (var * (1.20f * 0.001f));
 	}
-	
-	
 }
+
+const Matrix ParticleEmitter::IDENT_MATRIX(
+	1.0f, 0.0f ,0.0f ,0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, 0.0f, 1.0f
+);
+
+const Matrix ParticleEmitter::TRANS_CAMERA_MATRIX(
+	1.0f, 0.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 5.0f, 40.0f, 1.0f
+);
 
 // --- End of File ---

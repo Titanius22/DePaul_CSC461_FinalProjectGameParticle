@@ -28,23 +28,29 @@ public:
 	Matrix(const Matrix& t) = default;
 	Matrix& operator=(const Matrix&) = default;
 
-	void set( MatrixRow row, Vect4D *t );
-	void get( MatrixRow row, Vect4D *vOut );
+	Matrix(
+		const float _m0, const float _m1, const float _m2, const float _m3,
+		const float _m4, const float _m5, const float _m6, const float _m7,
+		const float _m8, const float _m9, const float _m10, const float _m11,
+		const float _m12, const float _m13, const float _m14, const float _m15
+	);
 
-	void setIdentMatrix();
-	void setTransMatrix(Vect4D *t );
-	void setScaleMatrix(Vect4D *s );
-	void setRotZMatrix( float Z_Radians );
+	void set(const MatrixRow row, Vect4D *t );
+	void get(const MatrixRow row, Vect4D *vOut );
+
+	void setTransMatrix(const Vect4D *t );
+	void setScaleMatrix(const Vect4D *s );
+	void setRotZMatrix(const float Z_Radians );
 
 	float &operator[]( Index e);
 	
-	Matrix operator*( Matrix &t );
-	Matrix operator*( float s );
+	Matrix operator*(const Matrix &t ) const;
+	Matrix operator*(const float s );
 
 	float Determinant();
 	
 	Matrix GetAdjugate();
-	Matrix& operator/=(float t);
+	Matrix& operator/=(const float t);
 	
 	void Inverse( Matrix &out );
 	

@@ -24,18 +24,18 @@ public:
 	Vect4D& operator=(const Vect4D&) = default;
 	// TODO: trial using _m for operator=
 
-	Vect4D(float tx, float ty, float tz, float tw = 1.0f);
-	Vect4D(__m128 t);
+	Vect4D(const float tx, const float ty, const float tz, const float tw = 1.0f);
+	Vect4D(const __m128 t);
 
-	void Cross(Vect4D &vin, Vect4D &vout);
+	void Cross(const Vect4D &vin, Vect4D &vout) const;
 	float &operator[](Vect e);
-	void norm(Vect4D &out);
+	void norm(Vect4D &out) const;
 	void set(float tx, float ty, float tz, float tw = 1.0f);
 
-	Vect4D operator * (float scale);
+	Vect4D operator * (const float scale) const;
 	Vect4D& operator *= (float scale);
-	Vect4D operator - (Vect4D t);
-	Vect4D operator + (Vect4D t);
+	Vect4D operator - (const Vect4D t) const;
+	Vect4D operator + (const Vect4D t) const;
 
 private:
 	union

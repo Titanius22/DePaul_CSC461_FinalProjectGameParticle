@@ -33,8 +33,7 @@ int main()
 		// counter for printing
 		int i = 0;
 		// initialize the camera matrix
-		Matrix cameraMatrix;
-		cameraMatrix.setIdentMatrix();
+		// IDENT_MATRIX is the camera matrix;
 
 		// setup the translation matrix
 		Matrix transMatrix;
@@ -42,7 +41,7 @@ int main()
 		transMatrix.setTransMatrix(&trans);
 
 		// multiply them together
-		tmp = cameraMatrix * transMatrix;
+		tmp = ParticleEmitter::IDENT_MATRIX * transMatrix;
 
 		// get the inverse matrix
 		Matrix inverseCameraMatrix;

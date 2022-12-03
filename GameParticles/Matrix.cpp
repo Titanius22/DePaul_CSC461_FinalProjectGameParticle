@@ -13,58 +13,47 @@ Matrix::Matrix()
 	  m12(0.0f), m13(0.0f), m14(0.0f), m15(0.0f)
 {}
 
+Matrix::Matrix(
+	const float _m0,  const float _m1,  const float _m2,  const float _m3,
+	const float _m4,  const float _m5,  const float _m6,  const float _m7,
+	const float _m8,  const float _m9,  const float _m10, const float _m11,
+	const float _m12, const float _m13, const float _m14, const float _m15
+)
+	: m0(_m0),    m1(_m1),  m2(_m2),    m3(_m3),
+	  m4(_m4),    m5(_m5),  m6(_m6),    m7(_m7),
+	  m8(_m8),    m9(_m9),  m10(_m10), m11(_m11),
+	  m12(_m12), m13(_m13), m14(_m14), m15(_m15)
+{}
+
 Matrix::~Matrix()
 {
 	// do nothing
 }
 
-void Matrix::setIdentMatrix()
+void Matrix::setTransMatrix(const Vect4D *t)
 { 
-	this->m0 = 1.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
+	this->m0 = 1.0f;
+	this->m1 = 0.0f;
+	this->m2 = 0.0f;
+	this->m3 = 0.0f;
 
-	this->m4 = 0.0;
-	this->m5 = 1.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
+	this->m4 = 0.0f;
+	this->m5 = 1.0f;
+	this->m6 = 0.0f;
+	this->m7 = 0.0f;
 
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 1.0;
-	this->m11 = 0.0;
-	
-	this->m12 = 0.0;
-	this->m13 = 0.0;
-	this->m14 = 0.0;
-	this->m15 = 1.0;
-}
-
-void Matrix::setTransMatrix(Vect4D *t)
-{ 
-	this->m0 = 1.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
-
-	this->m4 = 0.0;
-	this->m5 = 1.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
-
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 1.0;
-	this->m11 = 0.0;
+	this->m8 = 0.0f;
+	this->m9 = 0.0f;
+	this->m10 = 1.0f;
+	this->m11 = 0.0f;
 	
 	this->m12 = t->x;
 	this->m13 = t->y;
 	this->m14 = t->z;
-	this->m15 = 1.0;
+	this->m15 = 1.0f;
 }
 
-void Matrix::set( MatrixRow row, Vect4D *t )
+void Matrix::set(const MatrixRow row, Vect4D *t )
 {
 	switch( row )
 	{
@@ -162,7 +151,7 @@ float &Matrix::operator[](Index e)
 	}
 }
 
-void Matrix::get( MatrixRow row, Vect4D *t )
+void Matrix::get(const MatrixRow row, Vect4D *t )
 { // get a row of the matrix
 	switch( row )
 	{
@@ -199,7 +188,7 @@ void Matrix::get( MatrixRow row, Vect4D *t )
 	}
 }
 
-Matrix Matrix::operator*( Matrix& rhs) 
+Matrix Matrix::operator*(const Matrix& rhs) const
 { 
 	Matrix tmp;
 	
@@ -226,7 +215,7 @@ Matrix Matrix::operator*( Matrix& rhs)
 	return tmp;
 }
 
-Matrix& Matrix::operator/=(float rhs)
+Matrix& Matrix::operator/=(const float rhs)
 { 
 	// divide each element by a value
 	// using inverse multiply trick, faster that individual divides
@@ -386,7 +375,7 @@ void Matrix::Inverse( Matrix &out )
 	out = tmp;
 }
 
-void Matrix::setScaleMatrix(Vect4D *scale)
+void Matrix::setScaleMatrix(const Vect4D *scale)
 {
 	//	{	sx		0		0		0	}
 	//	{	0		sy		0		0	}
@@ -415,7 +404,7 @@ void Matrix::setScaleMatrix(Vect4D *scale)
 	this->m15 = 1.0;
 }
 
-void Matrix::setRotZMatrix(float az)
+void Matrix::setRotZMatrix(const float az)
 {
 	//	{	cos		-sin	0		0	}
 	//	{	sin		cos		0		0	}

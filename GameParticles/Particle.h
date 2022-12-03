@@ -47,6 +47,8 @@ private:
 	Vect4D	curr_Row1;
 	Vect4D  curr_Row2;
 	Vect4D  curr_Row3;
+
+	const static Vect4D Z_AXIS;
 };
 
 #endif 

@@ -5,6 +5,8 @@
 #include "Particle.h"
 #include "Matrix.h"
 
+const Vect4D Particle::Z_AXIS(0.0f, 0.0f, -5.0f);
+
 Particle::Particle()
 	: next(nullptr), prev(nullptr), life(0.0f), rotation(0.0f),
 	  position(Vect4D(0.0f, 0.0f, -6.0f)),
@@ -79,18 +81,17 @@ void Particle::Update(const float& time_elapsed)
 	// serious math below - magic secret sauce
 	life += time_elapsed;
 	position = position + (velocity * time_elapsed);
-	Vect4D z_axis(0.0f, 0.0f, -5.0f);
-	Vect4D v(-12.0f,10.f,0.0f);
-	position.Cross( z_axis, v);
+	Vect4D v;
+	position.Cross(Z_AXIS, v);
 	v.norm(v);
-	position = position + v * 0.05f * life;
+	position = position + (v * 0.05f * life);
 
 	if( MatrixScale > 1.0 )
 	{
 		MatrixScale = 1.0f/MatrixScale;
 	};
 
-	rotation = rotation + MatrixScale + rotation_velocity * time_elapsed ;
+	rotation = rotation + MatrixScale + (rotation_velocity * time_elapsed) ;
 }
 
 // --- End of File ---
