@@ -46,18 +46,12 @@ public:
 		const Vect4D _v0, const Vect4D _v1, const Vect4D _v2, const Vect4D _v3
 	);
 
-	void set(const MatrixRow row, Vect4D *t );
-	void get(const MatrixRow row, Vect4D *vOut ) const;
-
 	void setTransMatrix(const Vect4D* const t );
 	static Matrix getTransMatrix(const Vect4D t);
 	void setScaleMatrix(const Vect4D* const s );
 	void setRotZMatrix(const float Z_Radians );
-
-	float &operator[]( Index e);
 	
-	Matrix operator*(const Matrix &t ) const;
-	Matrix operator*(const float s );
+	//Matrix operator*(const Matrix &t ) const;
 	Matrix operator-(const Matrix& t) const;
 
 	float Determinant() const;
@@ -67,7 +61,6 @@ public:
 	
 	static Matrix Inverse(const Matrix in);
 	
-private:
 	union
 	{
 		struct
@@ -113,7 +106,44 @@ private:
 			float m15;
 		};
 	};
+
+private:
+	friend struct MmulM;
+	friend struct MmulMmulM;
+	friend struct MmulMmulMmulM;
+	friend struct MmulMmulMmulMmulM;
 };
+
+
+struct MmulM
+{
+	const Matrix& ma1;
+	const Matrix& ma2;
+
+	MmulM(const Matrix& _ma1, const Matrix& _ma2)
+		: ma1(_ma1), ma2(_ma2) {}
+
+	operator Matrix();
+};
+
+inline MmulM operator* (const Matrix& _ma1, const Matrix& _ma2)
+{
+	return MmulM(_ma1, _ma2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif  
 

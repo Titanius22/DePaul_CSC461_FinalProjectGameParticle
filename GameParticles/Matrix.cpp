@@ -97,167 +97,32 @@ Matrix Matrix::getTransMatrix(const Vect4D t)
 	return tmp;
 }
 
-void Matrix::set(const MatrixRow row, Vect4D *t )
-{
-	switch( row )
-	{
-	case MatrixRow::MATRIX_ROW_0:
-		this->m0 = t->x;
-		this->m1 = t->y;
-		this->m2 = t->z;
-		this->m3 = t->w;
-		break;
-
-	case MatrixRow::MATRIX_ROW_1:
-		this->m4 = t->x;
-		this->m5 = t->y;
-		this->m6 = t->z;
-		this->m7 = t->w;
-		break;
-
-	case MatrixRow::MATRIX_ROW_2:
-		this->m8 = t->x;
-		this->m9 = t->y;
-		this->m10 = t->z;
-		this->m11 = t->w;
-		break;
-
-	case MatrixRow::MATRIX_ROW_3:
-		this->m12 = t->x;
-		this->m13 = t->y;
-		this->m14 = t->z;
-		this->m15 = t->w;
-		break;
-
-	default:
-		// should never get here, if we are here something bad has happened
-		assert(0);
-	}
-}
-
-float &Matrix::operator[](Index e)
-{
-	// get the individual elements
-	switch(e)
-	{
-	case Index::m0:
-		return m0;
-		break;
-	case Index::m1:
-		return m1;
-		break;
-	case Index::m2:
-		return m2;
-		break;
-	case Index::m3:
-		return m3;
-		break;
-	case Index::m4:
-		return m4;
-		break;
-	case Index::m5:
-		return m5;
-		break;
-	case Index::m6:
-		return m6;
-		break;
-	case Index::m7:
-		return m7;
-		break;
-	case Index::m8:
-		return m8;
-		break;
-	case Index::m9:
-		return m9;
-		break;	
-	case Index::m10:
-		return m10;
-		break;
-	case Index::m11:
-		return m11;
-		break;	
-	case Index::m12:
-		return m12;
-		break;	
-	case Index::m13:
-		return m13;
-		break;	
-	case Index::m14:
-		return m14;
-		break;
-	case Index::m15:
-		return m15;
-		break;
-	default:
-		assert(0);
-		return m0;
-		break;
-	}
-}
-
-void Matrix::get(const MatrixRow row, Vect4D *t ) const
-{ // get a row of the matrix
-	switch( row )
-	{
-	case MatrixRow::MATRIX_ROW_0:
-		t->x = this->m0;
-		t->y = this->m1;
-		t->z = this->m2;
-		t->w = this->m3;
-		break;
-
-	case MatrixRow::MATRIX_ROW_1:
-		t->x = this->m4;
-		t->y = this->m5;
-		t->z = this->m6;
-		t->w = this->m7;
-		break;
-
-	case MatrixRow::MATRIX_ROW_2:
-		t->x = this->m8;
-		t->y = this->m9;
-		t->z = this->m10;
-		t->w = this->m11;
-		break;
-
-	case MatrixRow::MATRIX_ROW_3:
-		t->x = this->m12;
-		t->y = this->m13;
-		t->z = this->m14;
-		t->w = this->m15;
-		break;
-
-	default:
-		assert(0);
-	}
-}
-
-Matrix Matrix::operator*(const Matrix& rhs) const
-{ 
-	Matrix tmp;
-	
-	tmp.m0 = (m0*rhs.m0) + (m1*rhs.m4) + (m2*rhs.m8) + (m3*rhs.m12);
-	tmp.m1 = (m0*rhs.m1) + (m1*rhs.m5) + (m2*rhs.m9) + (m3*rhs.m13);
-	tmp.m2 = (m0*rhs.m2) + (m1*rhs.m6) + (m2*rhs.m10) + (m3*rhs.m14);
-	tmp.m3 = (m0*rhs.m3) + (m1*rhs.m7) + (m2*rhs.m11) + (m3*rhs.m15);
-	
-	tmp.m4 = (m4*rhs.m0) + (m5*rhs.m4) + (m6*rhs.m8) + (m7*rhs.m12);
-	tmp.m5 = (m4*rhs.m1) + (m5*rhs.m5) + (m6*rhs.m9) + (m7*rhs.m13);
-	tmp.m6 = (m4*rhs.m2) + (m5*rhs.m6) + (m6*rhs.m10) + (m7*rhs.m14);
-	tmp.m7 = (m4*rhs.m3) + (m5*rhs.m7) + (m6*rhs.m11) + (m7*rhs.m15);
-	
-	tmp.m8 = (m8*rhs.m0) + (m9*rhs.m4) + (m10*rhs.m8) + (m11*rhs.m12);
-	tmp.m9 = (m8*rhs.m1) + (m9*rhs.m5) + (m10*rhs.m9) + (m11*rhs.m13);
-	tmp.m10 = (m8*rhs.m2) + (m9*rhs.m6) + (m10*rhs.m10) + (m11*rhs.m14);
-	tmp.m11 = (m8*rhs.m3) + (m9*rhs.m7) + (m10*rhs.m11) + (m11*rhs.m15);
-	
-	tmp.m12 = (m12*rhs.m0) + (m13*rhs.m4) + (m14*rhs.m8) + (m15*rhs.m12);
-	tmp.m13 = (m12*rhs.m1) + (m13*rhs.m5) + (m14*rhs.m9) + (m15*rhs.m13);
-	tmp.m14 = (m12*rhs.m2) + (m13*rhs.m6) + (m14*rhs.m10) + (m15*rhs.m14);
-	tmp.m15 = (m12*rhs.m3) + (m13*rhs.m7) + (m14 *rhs.m11) + (m15*rhs.m15);
-
-	return tmp;
-}
+//Matrix Matrix::operator*(const Matrix& rhs) const
+//{ 
+//	Matrix tmp;
+//	
+//	tmp.m0 = (m0*rhs.m0) + (m1*rhs.m4) + (m2*rhs.m8) + (m3*rhs.m12);
+//	tmp.m1 = (m0*rhs.m1) + (m1*rhs.m5) + (m2*rhs.m9) + (m3*rhs.m13);
+//	tmp.m2 = (m0*rhs.m2) + (m1*rhs.m6) + (m2*rhs.m10) + (m3*rhs.m14);
+//	tmp.m3 = (m0*rhs.m3) + (m1*rhs.m7) + (m2*rhs.m11) + (m3*rhs.m15);
+//	
+//	tmp.m4 = (m4*rhs.m0) + (m5*rhs.m4) + (m6*rhs.m8) + (m7*rhs.m12);
+//	tmp.m5 = (m4*rhs.m1) + (m5*rhs.m5) + (m6*rhs.m9) + (m7*rhs.m13);
+//	tmp.m6 = (m4*rhs.m2) + (m5*rhs.m6) + (m6*rhs.m10) + (m7*rhs.m14);
+//	tmp.m7 = (m4*rhs.m3) + (m5*rhs.m7) + (m6*rhs.m11) + (m7*rhs.m15);
+//	
+//	tmp.m8 = (m8*rhs.m0) + (m9*rhs.m4) + (m10*rhs.m8) + (m11*rhs.m12);
+//	tmp.m9 = (m8*rhs.m1) + (m9*rhs.m5) + (m10*rhs.m9) + (m11*rhs.m13);
+//	tmp.m10 = (m8*rhs.m2) + (m9*rhs.m6) + (m10*rhs.m10) + (m11*rhs.m14);
+//	tmp.m11 = (m8*rhs.m3) + (m9*rhs.m7) + (m10*rhs.m11) + (m11*rhs.m15);
+//	
+//	tmp.m12 = (m12*rhs.m0) + (m13*rhs.m4) + (m14*rhs.m8) + (m15*rhs.m12);
+//	tmp.m13 = (m12*rhs.m1) + (m13*rhs.m5) + (m14*rhs.m9) + (m15*rhs.m13);
+//	tmp.m14 = (m12*rhs.m2) + (m13*rhs.m6) + (m14*rhs.m10) + (m15*rhs.m14);
+//	tmp.m15 = (m12*rhs.m3) + (m13*rhs.m7) + (m14 *rhs.m11) + (m15*rhs.m15);
+//
+//	return tmp;
+//}
 
 Matrix Matrix::operator-(const Matrix& rhs) const
 {
@@ -488,5 +353,32 @@ void Matrix::setScaleMatrix(const Vect4D *scale)
 	this->m14 = 0;
 	this->m15 = 1.0;
 }
+
+// Proxy stuff
+MmulM::operator Matrix()
+{
+	Matrix returnVal;
+	for (int i = 0; i < 4; i++)
+	{
+		((Vect4D*)&returnVal + i)->_m = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(ma2.v0_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->x)),
+				_mm_mul_ps(ma2.v1_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->y))
+			),
+			_mm_add_ps(
+				_mm_mul_ps(ma2.v2_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->z)),
+				_mm_mul_ps(ma2.v3_m128, _mm_set_ps1(((Vect4D*)&ma1 + i)->w))
+			)
+		);
+	}
+	return returnVal;
+}
+
+
+
+
+
+
+
 
 // --- End of File ---

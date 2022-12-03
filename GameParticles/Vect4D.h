@@ -37,8 +37,6 @@ public:
 	Vect4D operator - (const Vect4D& t) const;
 	Vect4D operator + (const Vect4D& t) const;
 	Vect4D& operator += (const Vect4D& t);
-
-private:
 	union
 	{
 		struct
