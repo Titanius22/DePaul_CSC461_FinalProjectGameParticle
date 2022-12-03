@@ -88,6 +88,10 @@ void ParticleEmitter::update()
 	// temp Particle
 	Particle* pTemp;
 
+	// clear the buffer
+	drawBuffer.clear();
+	bufferCount = 0;
+
 	while( p != nullptr )
 	{
 		// call every particle and update its position 
@@ -111,29 +115,15 @@ void ParticleEmitter::update()
 		}
 		else
 		{
+			// add to buffer
+		drawBuffer.push_back(*p);
+		
 			// increment to next point
 			p = p->next;
+
+			// track the current count
+			bufferCount++;
 		}
-	}
-
-	//move a copy to vector for faster iterations in draw
-	p = this->headParticle;
-	bufferCount = 0;
-
-	// clear the buffer
-	drawBuffer.clear();
-
-	// walk the pointers, add to list
-	while(p != 0)
-	{
-		// add to buffer
-		drawBuffer.push_back(*p);
-
-		// advance ptr
-		p = p->next;
-
-		// track the current count
-		bufferCount++;
 	}
 
 	// make sure the counts track (asserts go away in release - relax Christos)
