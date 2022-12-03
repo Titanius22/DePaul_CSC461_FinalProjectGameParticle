@@ -54,7 +54,7 @@ int main()
 		//       this method is using doubles... 
 		//       there is a float version (hint)
 		// ------------------------------------------------
-		OpenGLDevice::SetCameraMatrixDouble((const double *)&inverseCameraMatrix);
+		OpenGLDevice::SetCameraMatrixFloat((const float *)&inverseCameraMatrix);
 	
 	// main update loop... do this forever or until some breaks 
 	while(OpenGLDevice::IsRunning())

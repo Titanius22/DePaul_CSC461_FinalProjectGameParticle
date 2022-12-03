@@ -12,7 +12,7 @@ Vect4D::Vect4D()
 	this->w = 1.0;
 }
 
-Vect4D::Vect4D(double tx, double ty, double tz, double tw)
+Vect4D::Vect4D(float tx, float ty, float tz, float tw)
 {
 	this->x = tx;
 	this->y = ty;
@@ -27,7 +27,7 @@ Vect4D::~Vect4D()
 
 void Vect4D::norm(Vect4D &v)
 {
-	double mag = sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
+	float mag = sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
 
 	if(0.0f < mag)
 	{
@@ -49,7 +49,7 @@ Vect4D Vect4D::operator + (Vect4D t)
 	return ans;
 }
 
-double &Vect4D::operator[](Vect e)
+float &Vect4D::operator[](Vect e)
 {
 	switch(e)
 	{
@@ -71,7 +71,7 @@ double &Vect4D::operator[](Vect e)
 	}
 }
 
-Vect4D Vect4D::operator *(double scale)
+Vect4D Vect4D::operator *(float scale)
 {
 	Vect4D tmp;
 
@@ -101,7 +101,7 @@ void Vect4D::Cross(Vect4D &vin, Vect4D &vout)
 	vout.w = 1.0f;
 }
 
-void Vect4D::set(double tx, double ty, double tz, double tw)
+void Vect4D::set(float tx, float ty, float tz, float tw)
 {
 	this->x = tx;
 	this->y = ty;

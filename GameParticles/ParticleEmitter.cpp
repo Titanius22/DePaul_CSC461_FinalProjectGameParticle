@@ -69,10 +69,10 @@ void ParticleEmitter::SpawnParticle()
 void ParticleEmitter::update()
 {
 	// get current time
-	double current_time = globalTimer.GetGlobalTime();
+	float current_time = globalTimer.GetGlobalTime();
 
 	// spawn particles
-	double time_elapsed = current_time - last_spawn;
+	float time_elapsed = current_time - last_spawn;
 	
 	// update
 	while( spawn_frequency < time_elapsed )
@@ -251,7 +251,7 @@ void ParticleEmitter::draw()
 		//       this method is using doubles... 
 		//       there is a float version (hint)
 		// ------------------------------------------------
-		OpenGLDevice::SetTransformMatrixDouble((const double *)&tmp);
+		OpenGLDevice::SetTransformMatrixFloat((const float *)&tmp);
 
 		// squirrel away matrix for next update
 		tmp.get(Matrix::MatrixRow::MATRIX_ROW_0, &it->curr_Row0 );
@@ -283,10 +283,10 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	// Sometimes code like this is inside real commerical code ( so know you now how it feels )
 	
 	// x - variance
-	double var = static_cast<double>(rand() % 1000) * 0.0001f;
-	double sign = static_cast<double>(rand() % 2);
-	double *t_pos = reinterpret_cast<double*>(&pos);
-	double *t_var = &pos_variance[Vect::X];
+	float var = static_cast<float>(rand() % 1000) * 0.0001f;
+	float sign = static_cast<float>(rand() % 2);
+	float *t_pos = reinterpret_cast<float*>(&pos);
+	float *t_var = &pos_variance[Vect::X];
 	if(sign == 0)
 	{
 		var *= -1.0;
@@ -294,8 +294,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	*t_pos += *t_var * var;
 
 	// y - variance
-	var = static_cast<double>(rand() % 1000) * 0.0001f;
-	sign = static_cast<double>(rand() % 2);
+	var = static_cast<float>(rand() % 1000) * 0.0001f;
+	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
 	if(sign == 0)
@@ -305,8 +305,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	*t_pos += *t_var * var;
 	
 	// z - variance
-	var = static_cast<double>(rand() % 1000) * 0.001f;
-	sign = static_cast<double>(rand() % 2);
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
 	if(sign == 0)
@@ -315,8 +315,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	}
 	*t_pos += *t_var * var;
 	
-	var = static_cast<double>(rand() % 1000) * 0.0001f;
-	sign = static_cast<double>(rand() % 2);
+	var = static_cast<float>(rand() % 1000) * 0.0001f;
+	sign = static_cast<float>(rand() % 2);
 	
 	// x  - add velocity
 	t_pos = &vel[Vect::X];
@@ -328,8 +328,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	*t_pos += *t_var * var;
 	
 	// y - add velocity
-	var = static_cast<double>(rand() % 1000) * 0.0001f;
-	sign = static_cast<double>(rand() % 2);
+	var = static_cast<float>(rand() % 1000) * 0.0001f;
+	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
 	if(sign == 0)
@@ -339,8 +339,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	*t_pos += *t_var * var;
 	
 	// z - add velocity
-	var = static_cast<double>(rand() % 1000) * 0.001f;
-	sign = static_cast<double>(rand() % 2);
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
 	if(sign == 0)
@@ -350,8 +350,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	*t_pos += *t_var * var;
 	
 	// correct the sign
-	var = 1.20f * static_cast<double>(rand() % 1000) * 0.001f;
-	sign = static_cast<double>(rand() % 2);
+	var = 1.20f * static_cast<float>(rand() % 1000) * 0.001f;
+	sign = static_cast<float>(rand() % 2);
 	
 	if(sign == 0)
 	{
